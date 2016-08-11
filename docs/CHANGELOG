@@ -1,0 +1,81 @@
+Version 0.28b Beta: Feb 25, 2006
+Bugfix
+- Added OS name to CTCP VERSION reply and About dialog.
+- Fixed nasty bug that hung client on DCC chat connects.
+
+Version 0.27b Beta: Feb 15, 2006
+SOCKS Version
+- Added support for HP-UX and Tru64 OSes 
+- Code cleanup
+- Added compiler selection option to configure script 
+- Added documentation install path selection to configure script 
+- Added SOCKS4 and SOCKS5 proxy support
+
+Version 0.26b Beta: Aug 24, 2005
+Timestamps and large file support
+- Added large file support, thanks to Bilal Chaudhry <bilalc AT gmail.com> 
+  for the initial patch.
+- Added timestamps, thanks to Chris Howey <howeyc AT gmail.com>
+  for the patch. 
+- Rewrote menu handlers.
+- Corrected a problem entering 8-bit ascii characters
+- Added Option menus to all screens
+- Added User menu to channels
+
+Version 0.25b Beta: May 23, 2005
+Multi server support
+- Added multiserver support
+- Fixed custom color change on startup
+- /names now resets the userlist
+- Corrected a problem displaying 8-bit ascii characters
+- Several memory leaks were patched when closing windows
+
+Version 0.24b Beta: Jan 3, 2005
+Lots of changes and bug fixes
+- Added server password support
+- Fixed wrong initial nick when starting chat and supplying message
+- Fixed repeated attempts to start dcc chat when an error occurs 
+- Added custom color support
+- Ported to BeOS - mmu_man <revol@free.fr>
+- quoted $OSNAME in case in configure (no uname -o in BeOS) - mmu_man <revol AT free.fr>
+- /msg now sends message without opening a chat window 
+- added /notice command parser
+
+Version 0.23b Beta: Dec 04, 2004
+First Public Beta
+
+- Added Control and List menu to channel screen user menu
+- Fixed broken Enter key in IRIX
+- Suppressed errors in configure script
+
+Version 0.22a Alpha: Nov 23, 2004
+Added support for Cygwin
+
+- Cleaned up the code and makefile for cygwin compatibility
+
+Version 0.21a Alpha: Nov 21, 2004
+Bug fixes and new functionality
+
+- Pressing a key in a list now jumps to next entry starting with that key
+- Fixed a bug in ignore list code
+- Fixed minor issues with scrolling in channel lists
+
+Version 0.20a Alpha: Nov 12, 2004
+More minor bug fixes
+
+- Now preserving sort order of lists when saving configuration  
+- Fixed sorting and status changes in channel screen user lists
+- PgUp and PgDn, Ctrl-Y and Ctrl-V keys now work in channel user lists
+- Corrected the function of Ctrl-Y and Ctrl-V keys in channel list screens
+
+Version 0.19a Alpha: Nov 5, 2004
+Minor bug fixes
+
+- Fixed scrolling in the transfer window
+- Added a SIGPIPE signal handler 
+- Fixed premature socket close and broken pipe errors on DCC sends
+- Fixed progress bar accuracy
+ 
+Version 0.18a Alpha: Nov 1, 2004
+Initial alpha release
+
