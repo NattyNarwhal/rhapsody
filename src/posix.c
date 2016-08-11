@@ -7,11 +7,6 @@
 
 #ifdef NeXT
 
-/* i don't think we need these if you link it in directly
-#import <mach/mach.h>
-#import <mach/mach_error.h>
-#import <mach-o/dyld.h>
-*/
 #include <libc.h> /* for getwd */
 #include <string.h> /* for strncpy */
 #include <signal.h> /* for sigvec */
