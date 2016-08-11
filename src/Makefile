@@ -8,13 +8,16 @@ INCPATHS=$(BASEINCPATHS)
 FLAGS=$(BASEFLAGS) $(LOCALFLAGS)
 
 OBJECTS=screen.o log.o network.o parser.o ctcp.o dcc.o ncolor.o main.o cmenu.o \
-config.o forms.o option.o comm.o misc.o socks4.o socks5.o
+config.o forms.o option.o comm.o misc.o socks4.o socks5.o posix.o
 
 
 all: autodefs.h $(PROGRAMNAME)
 
 $(PROGRAMNAME): $(OBJECTS)
 	$(CC) $(FLAGS) -o $(PROGRAMNAME) $(OBJECTS) $(LIBPATHS) $(LIBS)
+
+posix.o: posix.c
+	$(CC) $(FLAGS) $(INCPATHS) -c -o $@ $<
 
 log.o: log.c log.h defines.h
 	$(CC) $(FLAGS) $(INCPATHS) -c -o $@ $<
