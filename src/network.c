@@ -44,7 +44,7 @@ int recv_all(int sockfd, char *buffer, int len){
 	while(i<len-1){
 		numbytes=recv(sockfd, &temp, 1, 0);
 		if (numbytes  == -1) {
-	        	if (errno==EAGAIN){
+	        	if (errno == EAGAIN || errno == EWOULDBLOCK){
 				#if (DEBUG & D_SOCKET) 
 					plog ("Read would block in recv_all()");
 				#endif
@@ -94,7 +94,7 @@ int recv_line(int sockfd, char *buffer, int *currpos, int maxlen){
 	while(pos < maxlen - 1){
 		numbytes = recv(sockfd, &temp, 1, 0);
 		if (numbytes  == -1) {
-	        	if (errno == EAGAIN){
+	        	if (errno == EAGAIN || errno == EWOULDBLOCK){
 				#if (DEBUG & D_SOCKET) 
 					plog ("Read would block in recv_line()");
 				#endif
@@ -162,7 +162,7 @@ int recv_ball(int sockfd, char *buffer, int len){
 
 	numbytes = recv(sockfd, &temp, len, 0);
 	if (numbytes  == -1){ 
-		if (errno==EAGAIN){
+	       	if (errno == EAGAIN || errno == EWOULDBLOCK){
 			#if (DEBUG & D_SOCKET) 
 				plog ("Read would block in recv_all()");
 			#endif
