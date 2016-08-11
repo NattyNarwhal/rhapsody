@@ -64,13 +64,13 @@ menubar *init_menubar(int textstart, int textspacing, int id){
 	menubarptr = malloc(sizeof(menubar));
 	
 	if (menubarptr != NULL){
-		menubarptr->entries = 0;
-		menubarptr->textstart = textstart;
-		menubarptr->textspace = textspacing;
-		menubarptr->changed = 1;
-		menubarptr->selected = NULL;
-		menubarptr->menuhead = NULL;
-		menubarptr->menutail = NULL;
+		(*menubarptr).entries = 0;
+		(*menubarptr).textstart = textstart;
+		(*menubarptr).textspace = textspacing;
+		(*menubarptr).changed = 1;
+		(*menubarptr).selected = NULL;
+		(*menubarptr).menuhead = NULL;
+		(*menubarptr).menutail = NULL;
 	}
 	else {
 		plog("Couldn't allocate menu memory in init_menubar\n");
@@ -84,19 +84,19 @@ menu *init_menu(int startx, int starty, char *name, int key, int id){
 
 	menuptr = malloc(sizeof(menu));
 	if (menuptr != NULL){
-		strncpy(menuptr->name, name, MENUNAMELEN);
-		menuptr->startx = startx;
-		menuptr->starty = starty;
-		menuptr->itemhead = NULL;
-		menuptr->itemtail = NULL;
-		menuptr->selected = NULL;
-		menuptr->chosen = NULL;
-		menuptr->width = 2;
-		menuptr->height = 2;
-		menuptr->entries = 0;
-		menuptr->id = id;
-		menuptr->key = key;
-		menuptr->window = NULL;
+		strncpy((*menuptr).name, name, MENUNAMELEN);
+		(*menuptr).startx = startx;
+		(*menuptr).starty = starty;
+		(*menuptr).itemhead = NULL;
+		(*menuptr).itemtail = NULL;
+		(*menuptr).selected = NULL;
+		(*menuptr).chosen = NULL;
+		(*menuptr).width = 2;
+		(*menuptr).height = 2;
+		(*menuptr).entries = 0;
+		(*menuptr).id = id;
+		(*menuptr).key = key;
+		(*menuptr).window = NULL;
 	}
 	else {
 		print_all("Couldn't allocate menu memory\n");
@@ -123,23 +123,23 @@ int delete_menu_items(menu *menuptr){
 	menuitem *current, *next;
 
 	if (menuptr != NULL){
-		current = menuptr->itemhead;
+		current = (*menuptr).itemhead;
 		while (current != NULL){
 			// free all space dedicated to items
-			next = current->next;
+			next = (*current).next;
 			free(current);
-			menuptr->entries--;
-			menuptr->height--;			
+			(*menuptr).entries--;
+			(*menuptr).height--;			
 			current = next;
 		}
-		menuptr->itemhead = NULL;
-		menuptr->itemtail = NULL;
-		menuptr->selected = NULL;
-		menuptr->chosen = NULL;
+		(*menuptr).itemhead = NULL;
+		(*menuptr).itemtail = NULL;
+		(*menuptr).selected = NULL;
+		(*menuptr).chosen = NULL;
 		
 		/* remove the menu window */
-		delwin(menuptr->window);
-		menuptr->window = NULL;		
+		delwin((*menuptr).window);
+		(*menuptr).window = NULL;		
 		return(1);
 	}
 	return(0);
@@ -149,31 +149,31 @@ int add_menubar_menu(menubar *menubarptr, menu *menuptr, int option){
 	menu *current, *last, *new;
 
 	if (menubarptr != NULL && menuptr != NULL){
-		menuptr->bar = menubarptr;
+		(*menuptr).bar = menubarptr;
 
 		if (option & M_ADD_FIRST){
-			menuptr->prev = NULL;
-			menuptr->next = menubarptr->menuhead;
-			//menubarptr->selected = menuptr;		
+			(*menuptr).prev = NULL;
+			(*menuptr).next = (*menubarptr).menuhead;
+			//(*menubarptr).selected = menuptr;		
 
-			if (menubarptr->menuhead != NULL) (menubarptr->menuhead)->prev = menuptr;
-			menubarptr->menuhead = menuptr;
-			if (menubarptr->menutail == NULL) menubarptr->menutail = menuptr;
+			if ((*menubarptr).menuhead != NULL) (*((*menubarptr).menuhead)).prev = menuptr;
+			(*menubarptr).menuhead = menuptr;
+			if ((*menubarptr).menutail == NULL) (*menubarptr).menutail = menuptr;
 		}
 		else{
-			menuptr->next = NULL;
-			menuptr->prev = menubarptr->menutail;
+			(*menuptr).next = NULL;
+			(*menuptr).prev = (*menubarptr).menutail;
 
-			if (menubarptr->menutail != NULL) (menubarptr->menutail)->next = menuptr;
-			menubarptr->menutail = menuptr;
-			if (menubarptr->menuhead == NULL){
-				//menubarptr->selected = menuptr;		
-				menubarptr->menuhead = menuptr;
+			if ((*menubarptr).menutail != NULL) (*((*menubarptr).menutail)).next = menuptr;
+			(*menubarptr).menutail = menuptr;
+			if ((*menubarptr).menuhead == NULL){
+				//(*menubarptr).selected = menuptr;		
+				(*menubarptr).menuhead = menuptr;
 			}
 		}
 
-		menubarptr->entries++;
-		menubarptr->changed = 1;
+		(*menubarptr).entries++;
+		(*menubarptr).changed = 1;
 	}
 	return(1);
 }
@@ -182,10 +182,10 @@ menu *get_menubar_menu(menubar *menubarptr, int id){
 	menu *current;
 
 	if (menubarptr != NULL){
-		current = menubarptr->menuhead;
+		current = (*menubarptr).menuhead;
 		while (current != NULL){
-			if (current->id == id) return(current);
-			current = current->next;
+			if ((*current).id == id) return(current);
+			current = (*current).next;
 		}
 	}
 	return(NULL);
@@ -193,9 +193,9 @@ menu *get_menubar_menu(menubar *menubarptr, int id){
 
 void set_menu_position(menu *menuptr, int startx, int starty){
 	if (menuptr != NULL){
-		menuptr->startx = startx;
-		menuptr->starty = starty;
-		if (menuptr->window != NULL) mvwin(menuptr->window, starty, startx);
+		(*menuptr).startx = startx;
+		(*menuptr).starty = starty;
+		if ((*menuptr).window != NULL) mvwin((*menuptr).window, starty, startx);
 	}
 }
 
@@ -203,22 +203,22 @@ int selected_menu_item_id(menu *menu){
 	int id;
 
 	if (menu == NULL) return(0);
-	if (menu->chosen != NULL){
+	if ((*menu).chosen != NULL){
 	
 		id = 0;
 		// if at the last submenu return selected id and reset
 		// the chosen flag
 
-		if ((menu->chosen)->child == NULL){
-			id = (menu->chosen)->id;
-			menu->chosen = NULL;
+		if ((*((*menu).chosen)).child == NULL){
+			id = (*((*menu).chosen)).id;
+			(*menu).chosen = NULL;
 			return(id);
 		}	
 		else {
 			// if a menu item was chosen, reset all chosen
 			// flags on the way back
-			id = selected_menu_item_id((menu->chosen)->child);
-			if (id != 0) menu->chosen = NULL;
+			id = selected_menu_item_id((*((*menu).chosen)).child);
+			if (id != 0) (*menu).chosen = NULL;
 			return(id);
 		}
 	}
@@ -229,29 +229,29 @@ int select_next_item(menu *menu){
 	menuitem *next;
 
 	if (menu != NULL){
-		if (menu->selected != NULL){
-			next = (menu->selected)->next;
+		if ((*menu).selected != NULL){
+			next = (*((*menu).selected)).next;
 			while (next != NULL){
-				if ((next->option) & M_SELECTABLE){
-					menu->selected = next;
+				if (((*next).option) & M_SELECTABLE){
+					(*menu).selected = next;
 					break;
 				}
-				next = next->next;
+				next = (*next).next;
 			}
 			// if reached the end, no selectable items found, start from 1st
 			// if no selectables exist, exit after entire menu is checked
 			if (next == NULL){
-				next = menu->itemhead;
+				next = (*menu).itemhead;
 				while (next != NULL){
-					if ((next->option) & M_SELECTABLE){
-						menu->selected = next;
+					if (((*next).option) & M_SELECTABLE){
+						(*menu).selected = next;
 						break;
 					}
-					next = next->next;
+					next = (*next).next;
 				}
 			}
 		}
-		else menu->selected = menu->itemhead;
+		else (*menu).selected = (*menu).itemhead;
 	}
 	return(1);
 }
@@ -260,30 +260,30 @@ int select_prev_item(menu *menu){
 	menuitem *prev;
 
 	if (menu != NULL){
-		if (menu->selected != NULL){
-			prev = (menu->selected)->prev;
+		if ((*menu).selected != NULL){
+			prev = (*((*menu).selected)).prev;
 			while (prev != NULL){
-				if ((prev->option) & M_SELECTABLE){
-					menu->selected = prev;
+				if (((*prev).option) & M_SELECTABLE){
+					(*menu).selected = prev;
 					break;
 				}
-				prev = prev->prev;
+				prev = (*prev).prev;
 			}
 
 			// if reached the beginning, no selectable items found
 			// start at last and check the entire menu backwards
 			if (prev == NULL){
-				prev = menu->itemtail;
+				prev = (*menu).itemtail;
 				while (prev != NULL){
-					if ((prev->option) & M_SELECTABLE){
-                                                menu->selected = prev;
+					if (((*prev).option) & M_SELECTABLE){
+                                                (*menu).selected = prev;
                                                 break;
 					}
-                                        prev = prev->prev;
+                                        prev = (*prev).prev;
 				}
 			}		
 		}
-		else menu->selected = menu->itemhead;
+		else (*menu).selected = (*menu).itemhead;
 	}
 	return(1);
 }
@@ -297,39 +297,39 @@ menuitem *add_menu_item(menu *menuptr, char *text, char *desc, int key, int opti
 			print_all("Couldn't allocate menu item memory\n");
 			exit (-1);
 		}
-		strcpy(new->text, text);
-		strcpy(new->description, desc);
-		new->key = key;
-		new->option = option;
-		new->id = id;
-		new->child = child;
+		strcpy((*new).text, text);
+		strcpy((*new).description, desc);
+		(*new).key = key;
+		(*new).option = option;
+		(*new).id = id;
+		(*new).child = child;
 
 		if (option & M_ADD_FIRST){
-			new->prev = NULL;
-			new->next = menuptr->itemhead;
-			menuptr->selected = new;		
+			(*new).prev = NULL;
+			(*new).next = (*menuptr).itemhead;
+			(*menuptr).selected = new;		
 
-			if (menuptr->itemhead != NULL) (menuptr->itemhead)->prev = new;
-			menuptr->itemhead = new;
-			if (menuptr->itemtail == NULL) menuptr->itemtail = new;
+			if ((*menuptr).itemhead != NULL) (*((*menuptr).itemhead)).prev = new;
+			(*menuptr).itemhead = new;
+			if ((*menuptr).itemtail == NULL) (*menuptr).itemtail = new;
 		}
 		else{
-			new->next = NULL;
-			new->prev = menuptr->itemtail;
+			(*new).next = NULL;
+			(*new).prev = (*menuptr).itemtail;
 
-			if (menuptr->itemtail != NULL) (menuptr->itemtail)->next = new;
-			menuptr->itemtail = new;
-			if (menuptr->itemhead == NULL){
-				menuptr->selected = new;		
-				menuptr->itemhead = new;
+			if ((*menuptr).itemtail != NULL) (*((*menuptr).itemtail)).next = new;
+			(*menuptr).itemtail = new;
+			if ((*menuptr).itemhead == NULL){
+				(*menuptr).selected = new;		
+				(*menuptr).itemhead = new;
 			}
 		}
 
-		if (menuptr->width < strlen(text) + 2){
-			 menuptr->width = strlen(text) + 2;
+		if ((*menuptr).width < strlen(text) + 2){
+			 (*menuptr).width = strlen(text) + 2;
 		}
-		menuptr->entries++;
-		menuptr->height++;	
+		(*menuptr).entries++;
+		(*menuptr).height++;	
 		return(new);
 	}
 	return(NULL);
@@ -725,92 +725,92 @@ void print_menu(menu *menuptr){
 	char text[256];
 
 	if (menuptr == NULL) return;
-	if (menuptr->starty >= LINES || menuptr->startx >= COLS){
+	if ((*menuptr).starty >= LINES || (*menuptr).startx >= COLS){
 		print_all("Menu cannot be displayed properly, please resize the screen.\n");
 	}
 	else {
 
 		/* X position... find it if set to auto */
-		if (menuptr->startx == M_AUTO && menuptr->bar != NULL){
-	                mstartx = menuptr->bar->textstart - 2;
+		if ((*menuptr).startx == M_AUTO && (*menuptr).bar != NULL){
+	                mstartx = menuptr->bar->textstart - 2; /* FIX? */
 			cmenu = menuptr->bar->menuhead;
 			while(cmenu != NULL){
 				if (cmenu == menuptr) break;
 				mstartx = mstartx + menuptr->bar->textspace + strlen(cmenu->name);
-				cmenu = cmenu->next;
+				cmenu = (*cmenu).next;
 			}
 		}
-		else mstartx = menuptr->startx;
-		if (mstartx + menuptr->width > COLS) mstartx = COLS - menuptr->width;
+		else mstartx = (*menuptr).startx;
+		if (mstartx + (*menuptr).width > COLS) mstartx = COLS - (*menuptr).width;
 
 		/* Y position... set this correctly to fit on screen (fix) */
-		if (menuptr->starty == M_AUTO && menuptr->bar != NULL){
+		if ((*menuptr).starty == M_AUTO && (*menuptr).bar != NULL){
 			mstarty = 1;
 		}
-		else mstarty = menuptr->starty;
+		else mstarty = (*menuptr).starty;
 
 
-		mwidth = menuptr->width;
-		mheight = menuptr->height;
+		mwidth = (*menuptr).width;
+		mheight = (*menuptr).height;
 
-		if (menuptr->window == NULL){
-			menuptr->window = newwin(mheight, mwidth, mstarty, mstartx);
+		if ((*menuptr).window == NULL){
+			(*menuptr).window = newwin(mheight, mwidth, mstarty, mstartx);
 		}
-		else mvwin(menuptr->window, mstarty, mstartx);
-		if (menuptr->window == NULL) return;
+		else mvwin((*menuptr).window, mstarty, mstartx);
+		if ((*menuptr).window == NULL) return;
 
 		ypos = 0;
-		current = menuptr->itemhead;	
+		current = (*menuptr).itemhead;	
 		curs_set(0);
 	
-		if (current != NULL && strlen(current->text) > mwidth - 2) strabslen = mwidth - 2;
+		if (current != NULL && strlen((*current).text) > mwidth - 2) strabslen = mwidth - 2;
 		else strabslen = 255;
 
-		wattrset(menuptr->window, MENU_COLOR);
-		wattron(menuptr->window, A_REVERSE);
-		box(menuptr->window,0,0);
+		wattrset((*menuptr).window, MENU_COLOR);
+		wattron((*menuptr).window, A_REVERSE);
+		box((*menuptr).window,0,0);
 		while (current != NULL){
 
 			text[0] = 0;
-			strncat(text, current->text, strabslen);
+			strncat(text, (*current).text, strabslen);
 			for (i=strlen(text); i < (mwidth-2) && i < COLS; i++){
 				text[i] = ' ';
 			}
 			text[i] = 0;	
 
-			if ((current->option) & M_DIVIDER){
-				wattrset(menuptr->window, MENU_COLOR);
-				wattron(menuptr->window, A_REVERSE);
-	                	mvwhline(menuptr->window, ypos+1, 1, 0, mwidth-2);
+			if (((*current).option) & M_DIVIDER){
+				wattrset((*menuptr).window, MENU_COLOR);
+				wattron((*menuptr).window, A_REVERSE);
+	                	mvwhline((*menuptr).window, ypos+1, 1, 0, mwidth-2);
 			}
 			else {
-				if (current == menuptr->selected){
-					wattrset(menuptr->window, MENU_COLOR);
-					wattron(menuptr->window, A_NORMAL);
-					mvwaddstr(menuptr->window, ypos+1, 1, text);
+				if (current == (*menuptr).selected){
+					wattrset((*menuptr).window, MENU_COLOR);
+					wattron((*menuptr).window, A_NORMAL);
+					mvwaddstr((*menuptr).window, ypos+1, 1, text);
 				} 
-				else if ((current->option) & M_SELECTABLE){
-					wattrset(menuptr->window, MENU_COLOR);
-					wattron(menuptr->window, A_REVERSE);
-       		                 	mvwaddstr(menuptr->window, ypos+1, 1, text);
+				else if (((*current).option) & M_SELECTABLE){
+					wattrset((*menuptr).window, MENU_COLOR);
+					wattron((*menuptr).window, A_REVERSE);
+       		                 	mvwaddstr((*menuptr).window, ypos+1, 1, text);
        		         	}
 				else{
-					wattrset(menuptr->window, MENU_COLOR);
-					wattron(menuptr->window, A_REVERSE);
-					wattron(menuptr->window, A_DIM);
-               		         	mvwaddstr(menuptr->window, ypos+1, 1, text);
-					wattrset(menuptr->window, MENU_COLOR);
-					wattron(menuptr->window, A_REVERSE);
+					wattrset((*menuptr).window, MENU_COLOR);
+					wattron((*menuptr).window, A_REVERSE);
+					wattron((*menuptr).window, A_DIM);
+               		         	mvwaddstr((*menuptr).window, ypos+1, 1, text);
+					wattrset((*menuptr).window, MENU_COLOR);
+					wattron((*menuptr).window, A_REVERSE);
                 		}
 			}
 
 			ypos++;
 			if (ypos >= LINES) break;
-			current = current->next;
+			current = (*current).next;
 		}
-		wrefresh(menuptr->window);
-		if (menuptr->chosen != NULL){
-			if ((menuptr->chosen)->child != NULL) print_menu ((menuptr->chosen)->child);
+		wrefresh((*menuptr).window);
+		if ((*menuptr).chosen != NULL){
+			if ((*((*menuptr).chosen)).child != NULL) print_menu ((*((*menuptr).chosen)).child);
 		}
 	}
 }
@@ -821,20 +821,20 @@ WINDOW *print_sub_menu(WINDOW *screen, menu *menu){
 	int ypos, i, mheight, mwidth, mstarty, mstartx, strabslen;
 	char text[256];
 
-	if (menu->starty >= LINES || menu->startx >= COLS){
+	if ((*menu).starty >= LINES || (*menu).startx >= COLS){
 		print_all("Menu cannot be displayed, please resize the screen.\n");
 		return(NULL);
 	}
 
-	if (menu->startx + menu->width > COLS) mwidth = COLS - menu->startx;
-	else mwidth = menu->width;
+	if ((*menu).startx + (*menu).width > COLS) mwidth = COLS - (*menu).startx;
+	else mwidth = (*menu).width;
 
-	if (menu->starty + menu->height > LINES) mheight = LINES - menu->starty;
-	else mheight = menu->height;
+	if ((*menu).starty + (*menu).height > LINES) mheight = LINES - (*menu).starty;
+	else mheight = (*menu).height;
 
 	// set this correctly to fit on screen (fix)
-	mstartx = menu->startx;
-	mstarty = menu->starty;
+	mstartx = (*menu).startx;
+	mstarty = (*menu).starty;
 
 	menuwin = subwin(screen, mheight, mwidth, mstarty, mstartx);
 	wattrset(menuwin, MENU_COLOR);
@@ -842,33 +842,33 @@ WINDOW *print_sub_menu(WINDOW *screen, menu *menu){
 	box(menuwin,0,0);
 
 	ypos = 0;
-	current = menu->itemhead;	
+	current = (*menu).itemhead;	
 	curs_set(0);
 	
-	if (strlen(current->text) > mwidth - 2) strabslen = mwidth - 2;
+	if (strlen((*current).text) > mwidth - 2) strabslen = mwidth - 2;
 	else strabslen = 255;
 
 	while (current != NULL){
 
 		text[0] = 0;
-		strncat(text, current->text, strabslen);
+		strncat(text, (*current).text, strabslen);
 		for (i=strlen(text); i < (mwidth-2); i++){
 			text[i] = ' ';
 		}
 		text[i] = 0;
 
-		if ((current->option) & M_DIVIDER){
+		if (((*current).option) & M_DIVIDER){
 			wattrset(menuwin, MENU_COLOR);
 			wattron(menuwin, A_REVERSE);
                 	mvwhline(menuwin, ypos+1, 1, 0, mwidth-2);
 		}
 		else {
-			if (current == menu->selected){
+			if (current == (*menu).selected){
 				wattrset(menuwin, MENU_COLOR);
 				wattron(menuwin, A_NORMAL);
 				mvwaddstr(menuwin, ypos+1, 1, text);
 			} 
-			else if ((current->option) & M_SELECTABLE){
+			else if (((*current).option) & M_SELECTABLE){
 				wattrset(menuwin, MENU_COLOR);
 				wattron(menuwin, A_REVERSE);
                         	mvwaddstr(menuwin, ypos+1, 1, text);
@@ -884,9 +884,9 @@ WINDOW *print_sub_menu(WINDOW *screen, menu *menu){
 		}
 
 		ypos++;
-		current = current->next;
+		current = (*current).next;
         }
-	return(menuwin);
+	return menuwin;
 }
 
 void print_menubar(menuwin *menuline, menubar *menubar){
@@ -899,55 +899,55 @@ void print_menubar(menuwin *menuline, menubar *menubar){
 	if (menuline == NULL || menubar == NULL) return;
         curs_set(0);
                         
-        // sprintf (buffer, "update %x:%x\n", menuline->update, menuline_update_status(menuline));
+        // sprintf (buffer, "update %x:%x\n", (*menuline).update, menuline_update_status(menuline));
         // print_all(buffer);
                         
         // print out the menu selection on the menuline if refresh changes are required
         if (menuline_update_status(menuline) & U_ALL_REFRESH){
                                         
                 // clear the menuline
-                wattrset(menuline->menuline, MENU_COLOR);
-                wattron(menuline->menuline, A_REVERSE);
+                wattrset((*menuline).menuline, MENU_COLOR);
+                wattron((*menuline).menuline, A_REVERSE);
                                         
-                for (i = 0; i < COLS; i++) mvwaddch(menuline->menuline, 0, i, ' ');
+                for (i = 0; i < COLS; i++) mvwaddch((*menuline).menuline, 0, i, ' ');
                                         
-                // menuentries = menubar->entries;
-                posx = menubar->textstart;
+                // menuentries = (*menubar).entries;
+                posx = (*menubar).textstart;
                         
                 // print all of the menu choices highlighting selectable key
 		
-		cmenu = menubar->menuhead;
+		cmenu = (*menubar).menuhead;
 		while(cmenu != NULL){
-			cmenutitle = cmenu->name;
-			wattrset(menuline->menuline, MENU_COLOR);
-			wattron(menuline->menuline, A_REVERSE);
+			cmenutitle = (*cmenu).name;
+			wattrset((*menuline).menuline, MENU_COLOR);
+			wattron((*menuline).menuline, A_REVERSE);
 			k = 0;
 
 			for (j = 0; j < strlen(cmenutitle); j++){
-				if (toupper(cmenutitle[j]) == toupper ((unsigned char)(cmenu->key)) && k == 0){
-					wattrset(menuline->menuline, MENU_COLOR);
-					wattron(menuline->menuline, A_BOLD);
-					wattron(menuline->menuline, A_STANDOUT);
-					wattron(menuline->menuline, A_REVERSE);
-					mvwaddch(menuline->menuline, 0, posx, cmenutitle[j]);
-					wattrset(menuline->menuline, MENU_COLOR);
-					wattron(menuline->menuline, A_REVERSE);
+				if (toupper(cmenutitle[j]) == toupper ((unsigned char)((*cmenu).key)) && k == 0){
+					wattrset((*menuline).menuline, MENU_COLOR);
+					wattron((*menuline).menuline, A_BOLD);
+					wattron((*menuline).menuline, A_STANDOUT);
+					wattron((*menuline).menuline, A_REVERSE);
+					mvwaddch((*menuline).menuline, 0, posx, cmenutitle[j]);
+					wattrset((*menuline).menuline, MENU_COLOR);
+					wattron((*menuline).menuline, A_REVERSE);
 					k = 1;
                                 }
                                 else {
-                                        mvwaddch(menuline->menuline, 0, posx, cmenutitle[j]);
+                                        mvwaddch((*menuline).menuline, 0, posx, cmenutitle[j]);
                                 }
 				posx++;
 			}
-			posx = posx + menubar->textspace;
-			cmenu = cmenu->next;
+			posx = posx + (*menubar).textspace;
+			cmenu = (*cmenu).next;
 		}                
-		wrefresh(menuline->menuline);
+		wrefresh((*menuline).menuline);
 		unset_menuline_update_status(menuline, U_ALL_REFRESH);
-		touchwin(menuline->menuline);		
+		touchwin((*menuline).menuline);		
 	}
-	if (menubar->selected != NULL){
-		print_menu(menubar->selected);
+	if ((*menubar).selected != NULL){
+		print_menu((*menubar).selected);
 	}
 
 }
@@ -961,15 +961,15 @@ int process_menubar_events(menubar *line, int event){
 
 	// if no menus are showing test for keys that may open a menu
 	// if true set the current menu and remove event
-	else if (line->selected == NULL){
-		menu = line->menuhead;
+	else if ((*line).selected == NULL){
+		menu = (*line).menuhead;
 		while(menu != NULL){
-                        if (menu->key == (event + 0x40)){
-                                line->selected = menu;
-				line->update = U_ALL_REDRAW;
+                        if ((*menu).key == (event + 0x40)){
+                                (*line).selected = menu;
+				(*line).update = U_ALL_REDRAW;
                                 return(E_NONE);
                         }
-			menu = menu->next;
+			menu = (*menu).next;
                 }
 		// otherwise return the event back to the previous handler
 		return(event);
@@ -980,18 +980,18 @@ int process_menubar_events(menubar *line, int event){
 	// and don't pass them to menu event handlers
 
         else if (event == KEY_LEFT){
-		line->selected = (line->selected)->prev;
-		line->update = U_BG_REDRAW;
-		if (line->selected == NULL){
-			line->selected = line->menutail;
+		(*line).selected = (*((*line).selected)).prev;
+		(*line).update = U_BG_REDRAW;
+		if ((*line).selected == NULL){
+			(*line).selected = (*line).menutail;
 		}
 		return (E_NONE);
 	}
         else if (event == KEY_RIGHT){
-		line->selected = (line->selected)->next;
-		line->update = U_BG_REDRAW;
-		if (line->selected == NULL){
-			line->selected = line->menuhead;
+		(*line).selected = (*((*line).selected)).next;
+		(*line).update = U_BG_REDRAW;
+		if ((*line).selected == NULL){
+			(*line).selected = (*line).menuhead;
 		}
 		return (E_NONE);
 	}
@@ -1001,10 +1001,10 @@ int process_menubar_events(menubar *line, int event){
 	// the line and requires a backround redraw
 
 	else {
-                if (event == 0x01B || event == KEY_CANCEL) line->update = U_BG_REDRAW;
-		returnevent = process_menu_events(line->selected, event);
+                if (event == 0x01B || event == KEY_CANCEL) (*line).update = U_BG_REDRAW;
+		returnevent = process_menu_events((*line).selected, event);
                 if (returnevent == 0x01B || returnevent == KEY_CANCEL){
-			line->selected = NULL;
+			(*line).selected = NULL;
 			return (E_NONE);	
 		}
 	}
@@ -1019,12 +1019,12 @@ int process_menu_events(menu *menu, int event){
                          
 	// if key is cancel or escape remove chosen at the second last menu
 	if (event == 0x01B || event == KEY_CANCEL){
-		if (menu->chosen == NULL) return (event);
-		else if ((menu->chosen)->child != NULL){
-			returnevent = process_menu_events((menu->chosen)->child, event);
+		if ((*menu).chosen == NULL) return (event);
+		else if ((*((*menu).chosen)).child != NULL){
+			returnevent = process_menu_events((*((*menu).chosen)).child, event);
 			if (returnevent == 0x01B || returnevent == KEY_CANCEL){ 
-				menu->chosen = NULL;
-				menu->selected = menu->itemhead;
+				(*menu).chosen = NULL;
+				(*menu).selected = (*menu).itemhead;
 				return (E_NONE);
 			}
 		}
@@ -1032,20 +1032,20 @@ int process_menu_events(menu *menu, int event){
 	} 
                                 
 	else if (event == 0x0A || event == 0x0D || event == KEY_ENTER){
-		if (menu->chosen == NULL){
-			menu->chosen = menu->selected;
+		if ((*menu).chosen == NULL){
+			(*menu).chosen = (*menu).selected;
 		}
-		else if ((menu->chosen)->child != NULL) {
-			returnevent = process_menu_events((menu->chosen)->child, event);
+		else if ((*((*menu).chosen)).child != NULL) {
+			returnevent = process_menu_events((*((*menu).chosen)).child, event);
 			return (returnevent);	
 		}
 	}
 
 	// if key is up or down and this menu has a child pass those to the children
         else if (event == KEY_DOWN){
-                if (menu->chosen != NULL){
-			if ((menu->chosen)->child != NULL){
-				process_menu_events((menu->chosen)->child, event);
+                if ((*menu).chosen != NULL){
+			if ((*((*menu).chosen)).child != NULL){
+				process_menu_events((*((*menu).chosen)).child, event);
 				return (E_NONE);
 			}
 		}
@@ -1053,9 +1053,9 @@ int process_menu_events(menu *menu, int event){
 		return (E_NONE);
        	}
         else if (event == KEY_UP){
-                if (menu->chosen != NULL){
-			if ((menu->chosen)->child != NULL){
-				process_menu_events((menu->chosen)->child, event);
+                if ((*menu).chosen != NULL){
+			if ((*((*menu).chosen)).child != NULL){
+				process_menu_events((*((*menu).chosen)).child, event);
 				return (E_NONE);
 			}
 		}
@@ -1068,42 +1068,42 @@ int process_menu_events(menu *menu, int event){
 int selected_menubar_item_id(menubar *line){
 	int id = 0;
 
-	if (line == NULL || line->selected == NULL) return(0);
-	if (line->menuhead == NULL) return(0);
-	id = selected_menu_item_id(line->selected);
+	if (line == NULL || (*line).selected == NULL) return(0);
+	if ((*line).menuhead == NULL) return(0);
+	id = selected_menu_item_id((*line).selected);
         
 	// if something was selected close the menu since 
 	// it isn't needed anymore 
 	if (id != 0){
-		line->selected = NULL;
-		line->update = U_BG_REDRAW;
+		(*line).selected = NULL;
+		(*line).update = U_BG_REDRAW;
 	}
 	return(id);  
 }
 
 void close_menubar(menubar *menubar){
 	if (menubar != NULL){
-		menubar->selected = NULL;
-		menubar->update = U_BG_REDRAW;
+		(*menubar).selected = NULL;
+		(*menubar).update = U_BG_REDRAW;
 	}
 }
 
 int menubar_update_status(menubar *menubar){
 	if (menubar != NULL){
-		return(menubar->update);
+		return((*menubar).update);
 	}
 	return(0);
 }
 
 void set_menubar_update_status(menubar *menubar, int update){
 	if (menubar != NULL){
-		menubar->update = ((menubar->update) | (update));
+		(*menubar).update = (((*menubar).update) | (update));
 	}
 }
 
 void unset_menubar_update_status(menubar *menubar, int update){
 	if (menubar != NULL){
-		menubar->update = ((menubar->update) & (0xffff ^ update));
+		(*menubar).update = (((*menubar).update) & (0xffff ^ update));
 	}
 }
 

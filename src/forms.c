@@ -59,8 +59,8 @@ form *add_form (char *name, int id, int x, int y, int width, int height, int att
 			plog("Cannot allocate form list memory in add_form(:1)\n");   
 			exit(MEMALLOC_ERR);   
 		}
-		formlist->list = NULL;
-		formlist->last = NULL;
+		(*formlist).list = NULL;
+		(*formlist).last = NULL;
 	}
 
 	/* now initialize form */
@@ -70,19 +70,19 @@ form *add_form (char *name, int id, int x, int y, int width, int height, int att
 		exit(MEMALLOC_ERR);   
 	}
 
-	strncpy(new->name, name, 255);
-	new->id = id;
-	new->list = NULL;
-	new->textlist = NULL;
-	new->active = NULL;
-        new->endlist = NULL;
-	new->requestedx = x;
-	new->requestedy = y;
-	new->width = width;
-	new->height = height;
-	new->attrib = attr;
-	new->style = style;
-	new->window = NULL;
+	strncpy((*new).name, name, 255);
+	(*new).id = id;
+	(*new).list = NULL;
+	(*new).textlist = NULL;
+	(*new).active = NULL;
+        (*new).endlist = NULL;
+	(*new).requestedx = x;
+	(*new).requestedy = y;
+	(*new).width = width;
+	(*new).height = height;
+	(*new).attrib = attr;
+	(*new).style = style;
+	(*new).window = NULL;
 
 	/* insert form into formlist */
 	newentry = calloc(1, sizeof(form_list_entry));	
@@ -90,11 +90,11 @@ form *add_form (char *name, int id, int x, int y, int width, int height, int att
 		plog("Cannot allocate form list entry memory in add_form(:3)\n");   
 		exit(MEMALLOC_ERR);   
 	}
-	newentry->form = new;
-	newentry->next = formlist->list;
-	newentry->prev = NULL;
-	formlist->list = newentry;
-	if (formlist->last == NULL) formlist->last = newentry;
+	(*newentry).form = new;
+	(*newentry).next = (*formlist).list;
+	(*newentry).prev = NULL;
+	(*formlist).list = newentry;
+	if ((*formlist).last == NULL) (*formlist).last = newentry;
 
 	return(new);	
 }
@@ -107,32 +107,32 @@ form *remove_form(form *form){
 	if (form == NULL) return(NULL);
 
 	/* remove form from the form list */
-	entry = formlist->list;
+	entry = (*formlist).list;
 	while (entry != NULL){
-		if (entry->form == form){
-			if (entry->prev != NULL) (entry->prev)->next = entry->next;
-			if (entry->next != NULL) (entry->next)->prev = entry->prev;
-			if (entry == formlist->list) formlist->list = entry->next;
-			if (entry == formlist->last) formlist->last = entry->prev;
+		if ((*entry).form == form){
+			if ((*entry).prev != NULL) (*((*entry).prev)).next = (*entry).next;
+			if ((*entry).next != NULL) (*((*entry).next)).prev = (*entry).prev;
+			if (entry == (*formlist).list) (*formlist).list = (*entry).next;
+			if (entry == (*formlist).last) (*formlist).last = (*entry).prev;
 			free(entry);
 			break;
 		}
-		entry = entry->next;
+		entry = (*entry).next;
 	}
 
 	/* now free up the memory used up by the form and close its window */
-	if (form->window != NULL) delwin(form->window);
+	if ((*form).window != NULL) delwin((*form).window);
 
-	current = form->list;
+	current = (*form).list;
 	while (current != NULL){
-		next = current->next;
+		next = (*current).next;
 		remove_form_component(form, current); 	
 		current = next;
 	}
 
-	currenta = form->textlist;
+	currenta = (*form).textlist;
 	while (currenta != NULL){
-		nexta = currenta->next;
+		nexta = (*currenta).next;
 		remove_Ftextarea(form, currenta); 	
 		currenta = nexta;
 	}
@@ -147,10 +147,10 @@ int remove_all_forms(){
 	if (formlist == NULL) return(0);
 
 	i = 0;
-	current = formlist->list;
+	current = (*formlist).list;
 	while (current != NULL){
-		next = current->next;
-		remove_form(current->form);
+		next = (*current).next;
+		remove_form((*current).form);
 		current = next;
 		i++;
 	}
@@ -164,60 +164,60 @@ void print_form(form *form){
 
 	if (form == NULL) return;
 	curs_set(0);
-	if (form->window == NULL){
-		if (form->requestedx == -1) form->x = COLS/2 - (form->width)/2;
-		else if (form->requestedx > COLS - (form->width)) form->x = COLS - (form->width);
+	if ((*form).window == NULL){
+		if ((*form).requestedx == -1) (*form).x = COLS/2 - ((*form).width)/2;
+		else if ((*form).requestedx > COLS - ((*form).width)) (*form).x = COLS - ((*form).width);
 
-		if (form->requestedy == -1) form->y = LINES/2 - (form->height)/2;
-		else if (form->requestedy > LINES - (form->height)) form->y = COLS - (form->height);
+		if ((*form).requestedy == -1) (*form).y = LINES/2 - ((*form).height)/2;
+		else if ((*form).requestedy > LINES - ((*form).height)) (*form).y = COLS - ((*form).height);
 		
-		(form->window) = newwin(form->height, form->width, form->y, form->x);
-		if (form->window == NULL){
+		((*form).window) = newwin((*form).height, (*form).width, (*form).y, (*form).x);
+		if ((*form).window == NULL){
 			plog("Cannot create form window in print_form (:1)\n");   
 			return;   
 		}
-		keypad(form->window, TRUE);
-		intrflush(form->window, FALSE);
-		meta(form->window, TRUE);
-		wbkgdset(form->window, ' ' | form->attrib | A_REVERSE);		
-		werase(form->window);
-		box(form->window, 0, 0);
+		keypad((*form).window, TRUE);
+		intrflush((*form).window, FALSE);
+		meta((*form).window, TRUE);
+		wbkgdset((*form).window, ' ' | (*form).attrib | A_REVERSE);		
+		werase((*form).window);
+		box((*form).window, 0, 0);
 	}
 		
 	/* reset the form to it normal attribute state */
-	wbkgdset(form->window, ' ' | form->attrib);		
+	wbkgdset((*form).window, ' ' | (*form).attrib);		
 
 	/* draw the form in reverse so it stands out on mono terminals */
-	if ((form->style)&(STYLE_TITLE)){
-		wattrset(form->window, form->attrib | A_REVERSE);
-		mvwhline(form->window, 2, 1, 0, form->width - 2);
-		mvwaddstr(form->window, 1, 2, form->name);
+	if (((*form).style)&(STYLE_TITLE)){
+		wattrset((*form).window, (*form).attrib | A_REVERSE);
+		mvwhline((*form).window, 2, 1, 0, (*form).width - 2);
+		mvwaddstr((*form).window, 1, 2, (*form).name);
 	}
 
 	/* draw all the active components */
-	current = form->list;
+	current = (*form).list;
 	while (current != NULL){
-		if (current == form->active) active = 1;
+		if (current == (*form).active) active = 1;
 		else active = 0; 
-		if (current->type == F_TEXTLINE) print_Ftextline(form, (Ftextline *)(current->component), active); 	
-		else if (current->type == F_LIST) print_Flist(form, (Flist *)(current->component), active); 	
-		else if (current->type == F_BUTTON) print_Fbutton(form, (Fbutton *)(current->component), active); 	
-		else if (current->type == F_CHECKBOX) print_Fcheckbox(form, (Fcheckbox *)(current->component), active); 	
-		else if (current->type == F_CHECKBOX_ARRAY) print_Fcheckbox_array(form, 
-			(Fcheckbox_array *)(current->component), active); 
+		if ((*current).type == F_TEXTLINE) print_Ftextline(form, (Ftextline *)((*current).component), active); 	
+		else if ((*current).type == F_LIST) print_Flist(form, (Flist *)((*current).component), active); 	
+		else if ((*current).type == F_BUTTON) print_Fbutton(form, (Fbutton *)((*current).component), active); 	
+		else if ((*current).type == F_CHECKBOX) print_Fcheckbox(form, (Fcheckbox *)((*current).component), active); 	
+		else if ((*current).type == F_CHECKBOX_ARRAY) print_Fcheckbox_array(form, 
+			(Fcheckbox_array *)((*current).component), active); 
 
-		current = current->next;
+		current = (*current).next;
 	}
 
 	/* draw passive text areas */
-	textarea = form->textlist;
+	textarea = (*form).textlist;
 	while (textarea != NULL){
 		print_Ftextarea(form, textarea); 	
-		textarea = textarea->next;
+		textarea = (*textarea).next;
 	}
 
-	touchwin(form->window);
-	wrefresh(form->window);	
+	touchwin((*form).window);
+	wrefresh((*form).window);	
 }
 
 int process_form_events(form *F, int event){
@@ -229,48 +229,48 @@ int process_form_events(form *F, int event){
 		return (event);   
 	}
 	if (event == E_NEXT){
-		if (F->active == NULL) F->active = F->list;
+		if ((*F).active == NULL) (*F).active = (*F).list;
 		else{ 
-			F->active = (F->active)->next;
-			if (F->active == NULL) F->active = F->list;
+			(*F).active = (*((*F).active)).next;
+			if ((*F).active == NULL) (*F).active = (*F).list;
 		}
-		touchwin(F->window);
+		touchwin((*F).window);
 		return(E_NONE);
 	}
 	if (event == E_PREV){
-		if (F->active == NULL) F->active = F->list;
+		if ((*F).active == NULL) (*F).active = (*F).list;
 		else{ 
-			F->active = (F->active)->prev;
-			if (F->active == NULL) F->active = F->endlist;
+			(*F).active = (*((*F).active)).prev;
+			if ((*F).active == NULL) (*F).active = (*F).endlist;
 		}
-		touchwin(F->window);
+		touchwin((*F).window);
 		return(E_NONE);
 	}
 	else if (event == 27) return(27);
 	else {
-		active = F->active;
-		type = active->type;	
-		if (type == F_TEXTLINE) revent = process_Ftextline_events((Ftextline *)(active->component), event); 	
-		else if (type == F_LIST) revent = process_Flist_events((Flist *)(active->component), event); 	
-		else if (type == F_BUTTON) revent = process_Fbutton_events((Fbutton *)(active->component), event); 	
-		else if (type == F_CHECKBOX) revent = process_Fcheckbox_events((Fcheckbox *)(active->component), event); 	
-		else if (type == F_CHECKBOX_ARRAY) revent = process_Fcheckbox_array_events((Fcheckbox_array *)(active->component), event); 	
+		active = (*F).active;
+		type = (*active).type;	
+		if (type == F_TEXTLINE) revent = process_Ftextline_events((Ftextline *)((*active).component), event); 	
+		else if (type == F_LIST) revent = process_Flist_events((Flist *)((*active).component), event); 	
+		else if (type == F_BUTTON) revent = process_Fbutton_events((Fbutton *)((*active).component), event); 	
+		else if (type == F_CHECKBOX) revent = process_Fcheckbox_events((Fcheckbox *)((*active).component), event); 	
+		else if (type == F_CHECKBOX_ARRAY) revent = process_Fcheckbox_array_events((Fcheckbox_array *)((*active).component), event); 	
 	
 		if (revent == E_NEXT){
-			F->active = (F->active)->next;
-                	if (F->active == NULL) F->active = F->list;
-			touchwin(F->window);
+			(*F).active = (*((*F).active)).next;
+                	if ((*F).active == NULL) (*F).active = (*F).list;
+			touchwin((*F).window);
 			return(E_NONE);
 		}
 		else if (revent == E_PREV){
-			F->active = (F->active)->prev;
-                	if (F->active == NULL) F->active = F->endlist;
-			touchwin(F->window);
+			(*F).active = (*((*F).active)).prev;
+                	if ((*F).active == NULL) (*F).active = (*F).endlist;
+			touchwin((*F).window);
 			return(E_NONE);
 		}
 		/* special case, return the id of the component link, not the actual component */
 		else if (revent == E_COMPONENT_ID){
-			return(active->id);
+			return((*active).id);
 		}
 		else return(revent);
 	}	
@@ -286,58 +286,58 @@ Fcomponent *add_form_component (form *form, void *component, int id, int type){
 		plog("Cannot allocate form component memory in add_Fcomponent(:1)\n");   
 		exit(MEMALLOC_ERR);   
 	}
-	new->type = type;
-	new->component = component;
-	if (form->endlist != NULL) (form->endlist)->next = new;
-	new->prev = form->endlist;
-	new->next = NULL;
-	new->id = id;
+	(*new).type = type;
+	(*new).component = component;
+	if ((*form).endlist != NULL) (*((*form).endlist)).next = new;
+	(*new).prev = (*form).endlist;
+	(*new).next = NULL;
+	(*new).id = id;
 	
-	if (form->list == NULL) form->list = new;
-	form->endlist = new;
-	if (form->active == NULL) form->active = new;
+	if ((*form).list == NULL) (*form).list = new;
+	(*form).endlist = new;
+	if ((*form).active == NULL) (*form).active = new;
 	return(new);
 }
 
 int remove_form_component (form *form, Fcomponent *current){
 	if (current == NULL) return(0);
 
-	if (current->type == F_TEXTLINE) remove_Ftextline((Ftextline *)(current->component)); 	
-	else if (current->type == F_LIST) remove_Flist((Flist *)(current->component)); 	
-	else if (current->type == F_BUTTON) remove_Fbutton((Fbutton *)(current->component)); 	
-	else if (current->type == F_CHECKBOX) remove_Fcheckbox((Fcheckbox *)(current->component)); 	
-	else if (current->type == F_CHECKBOX_ARRAY) remove_Fcheckbox_array((Fcheckbox_array *)(current->component)); 
+	if ((*current).type == F_TEXTLINE) remove_Ftextline((Ftextline *)((*current).component)); 	
+	else if ((*current).type == F_LIST) remove_Flist((Flist *)((*current).component)); 	
+	else if ((*current).type == F_BUTTON) remove_Fbutton((Fbutton *)((*current).component)); 	
+	else if ((*current).type == F_CHECKBOX) remove_Fcheckbox((Fcheckbox *)((*current).component)); 	
+	else if ((*current).type == F_CHECKBOX_ARRAY) remove_Fcheckbox_array((Fcheckbox_array *)((*current).component)); 
 
-	if (current->prev != NULL) (current->prev)->next = current->next;
-	if (current->next != NULL) (current->next)->prev = current->prev;
+	if ((*current).prev != NULL) (*((*current).prev)).next = (*current).next;
+	if ((*current).next != NULL) (*((*current).next)).prev = (*current).prev;
 	free(current);
 	return(1);
 }
 
 int add_form_textarea (form *form, Ftextarea *textarea){
-	textarea->next = form->textlist;
-	textarea->prev = NULL;
-	form->textlist = textarea;
+	(*textarea).next = (*form).textlist;
+	(*textarea).prev = NULL;
+	(*form).textlist = textarea;
 	return(1);
 }
 
 Fcomponent *active_form_component (form *form){
-	return(form->active);
+	return((*form).active);
 }
 
 Fcomponent *form_component_by_id (form *form, int id){
 	Fcomponent *current;
 
-	current = form->list;
+	current = (*form).list;
 	while (current != NULL){
-		if (current->id == id) return(current);
-		current = current->next;
+		if ((*current).id == id) return(current);
+		current = (*current).next;
 	}
 	return(NULL);
 }
 
 int active_form_component_id (form *form){
-	return((form->active)->id);
+	return((*((*form).active)).id);
 }
 
 
@@ -359,28 +359,28 @@ Ftextarea *add_Ftextarea(char *name, int x, int y, int width, int height, int st
 		exit(MEMALLOC_ERR);   
 	}
 
-	new->buffer = malloc(strlen(stringt) + 1);	
-	if (new->buffer == NULL){
+	(*new).buffer = malloc(strlen(stringt) + 1);	
+	if ((*new).buffer == NULL){
 		plog("Cannot allocate memory in add_Ftextarea(:2)\n");   
 		exit(MEMALLOC_ERR);   
 	}
-	new->x = x;
-	new->y = y;
-	strcpy(new->name, name);
-	new->width = width;
-	new->height = height;
-	new->style = style;	
-	new->attrib = attr;
-	strcpy(new->buffer, stringt);
+	(*new).x = x;
+	(*new).y = y;
+	strcpy((*new).name, name);
+	(*new).width = width;
+	(*new).height = height;
+	(*new).style = style;	
+	(*new).attrib = attr;
+	strcpy((*new).buffer, stringt);
 	return(new);	
 }
 
 int remove_Ftextarea(form *form, Ftextarea *current){
 	if (current == NULL) return(0);
 
-	if (current->prev != NULL) (current->prev)->next = current->next;
-	if (current->next != NULL) (current->next)->prev = current->prev;
-	if (current->buffer != NULL) free(current->buffer);
+	if ((*current).prev != NULL) (*((*current).prev)).next = (*current).next;
+	if ((*current).next != NULL) (*((*current).next)).prev = (*current).prev;
+	if ((*current).buffer != NULL) free((*current).buffer);
 	free(current);
 	return(1);
 }
@@ -389,43 +389,43 @@ void print_Ftextarea(form *form, Ftextarea *area){
 	int i, j, k, l, t, width;
 	int lenstr;
 
-	lenstr = strlen(area->buffer);
+	lenstr = strlen((*area).buffer);
 
 	/* if attribute is -1, area picks up form's attributes */
-	if (area->attrib == -1) wattrset(form->window, form->attrib | A_REVERSE);
-	else wattrset(form->window, area->attrib | A_REVERSE);
+	if ((*area).attrib == -1) wattrset((*form).window, (*form).attrib | A_REVERSE);
+	else wattrset((*form).window, (*area).attrib | A_REVERSE);
 
 	t = 0;
-	for (i = area->y, k = 0; k < area->height; i++, k++){
-		for (j = area->x, l = 0; l < area->width; j++, l++){
+	for (i = (*area).y, k = 0; k < (*area).height; i++, k++){
+		for (j = (*area).x, l = 0; l < (*area).width; j++, l++){
 			if (t < lenstr){
-				if (area->buffer[t] == '\n'){
-					l = area->width;
+				if ((*area).buffer[t] == '\n'){
+					l = (*area).width;
 				}
 				else{
-					mvwaddch(form->window, i, j, area->buffer[t]);
+					mvwaddch((*form).window, i, j, (*area).buffer[t]);
 				}
 			}
-			// else mvwaddch(form->window, i, j, ' ');
+			// else mvwaddch((*form).window, i, j, ' ');
 			t++;
 		}
 	}
 
-	touchwin(form->window);
+	touchwin((*form).window);
 }
 
 void set_Ftextarea_buffer(Ftextarea *F, char *buffer){
-	free(F->buffer);
-	F->buffer = malloc(strlen(buffer) + 1);	
-        if (F->buffer == NULL){
+	free((*F).buffer);
+	(*F).buffer = malloc(strlen(buffer) + 1);	
+        if ((*F).buffer == NULL){
 		plog("Cannot allocate memory in set_Ftextarea_buffer(:2)\n");   
 		exit(MEMALLOC_ERR);   
 	}
-	strcpy(F->buffer, buffer);
+	strcpy((*F).buffer, buffer);
 }
 
 char *Ftextarea_buffer_contents(Ftextarea *F){
-	return(F->buffer);
+	return((*F).buffer);
 }
 	
 /**** text line ***************************************************************************/
@@ -440,30 +440,30 @@ Ftextline *add_Ftextline(char *name, int tx, int ty, int x, int y, int size,
 		exit(MEMALLOC_ERR);   
 	}
 
-	new->buffer = malloc(size + 1);	
-        if (new->buffer == NULL){
+	(*new).buffer = malloc(size + 1);	
+        if ((*new).buffer == NULL){
 		plog("Cannot allocate memory in add_Ftextline(:2)\n");   
 		exit(MEMALLOC_ERR);   
 	}
-	new->x = x;
-	new->y = y;
-	strcpy(new->name, name);
-	new->namex = tx;
-	new->namey = ty;
-	new->buffersize = size;
-	new->width = width;
-	new->attrib = attr;
-	new->start = 0;
-	new->cursorpos = 0;
-	new->buffer[0] = 0;
-	new->inputallow = inputallow;
-	new->style = style;	
+	(*new).x = x;
+	(*new).y = y;
+	strcpy((*new).name, name);
+	(*new).namex = tx;
+	(*new).namey = ty;
+	(*new).buffersize = size;
+	(*new).width = width;
+	(*new).attrib = attr;
+	(*new).start = 0;
+	(*new).cursorpos = 0;
+	(*new).buffer[0] = 0;
+	(*new).inputallow = inputallow;
+	(*new).style = style;	
 	return(new);	
 }
 
 int remove_Ftextline(Ftextline *textline){
 	if (textline == NULL) return(0);
-	if (textline->buffer != NULL) free(textline->buffer);
+	if ((*textline).buffer != NULL) free((*textline).buffer);
 	free (textline);
 	return(1);
 }
@@ -472,91 +472,91 @@ void print_Ftextline(form *form, Ftextline *line, int active){
 	int i, j, width;
 	int strstart, linelen, lenstr;
 	
-	width = line->width;
-	if (width > form->width - line->x) width = form->width - line->x - 1;
+	width = (*line).width;
+	if (width > (*form).width - (*line).x) width = (*form).width - (*line).x - 1;
 
-	strstart = line->start;
-	linelen = width + line->x;
-	lenstr = strlen(line->buffer);
+	strstart = (*line).start;
+	linelen = width + (*line).x;
+	lenstr = strlen((*line).buffer);
 
-	wattrset(form->window, form->attrib | A_REVERSE) ;
+	wattrset((*form).window, (*form).attrib | A_REVERSE) ;
 	if (active){
-		wattron(form->window, A_BOLD);
-		mvwaddstr(form->window, line->namey, line->namex, line->name);
-		wattroff(form->window, A_BOLD);
+		wattron((*form).window, A_BOLD);
+		mvwaddstr((*form).window, (*line).namey, (*line).namex, (*line).name);
+		wattroff((*form).window, A_BOLD);
 	}
-	else mvwaddstr(form->window, line->namey, line->namex, line->name);
-	wattrset(form->window, line->attrib);
+	else mvwaddstr((*form).window, (*line).namey, (*line).namex, (*line).name);
+	wattrset((*form).window, (*line).attrib);
 
-	for (i = line->x, j = strstart; i < linelen; i++, j++){
-		if ((j == line->cursorpos) && active){
-			wattrset(form->window, line->attrib | A_REVERSE);
+	for (i = (*line).x, j = strstart; i < linelen; i++, j++){
+		if ((j == (*line).cursorpos) && active){
+			wattrset((*form).window, (*line).attrib | A_REVERSE);
 			if (j < lenstr){
-				if (line->style & STYLE_MASK_TEXT) mvwaddch(form->window, line->y, i, '*');
-				else mvwaddch(form->window, line->y, i, line->buffer[j]);
+				if ((*line).style & STYLE_MASK_TEXT) mvwaddch((*form).window, (*line).y, i, '*');
+				else mvwaddch((*form).window, (*line).y, i, (*line).buffer[j]);
 			}
-			else mvwaddch(form->window, line->y, i, ' ');
-			wattrset(form->window, line->attrib);
+			else mvwaddch((*form).window, (*line).y, i, ' ');
+			wattrset((*form).window, (*line).attrib);
 		}
 		else {
-			if (j >= lenstr) mvwaddch(form->window, line->y, i, ' ');
+			if (j >= lenstr) mvwaddch((*form).window, (*line).y, i, ' ');
 			else{
-				if (line->style & STYLE_MASK_TEXT) mvwaddch(form->window, line->y, i, '*');
-				else mvwaddch(form->window, line->y, i, line->buffer[j]);
+				if ((*line).style & STYLE_MASK_TEXT) mvwaddch((*form).window, (*line).y, i, '*');
+				else mvwaddch((*form).window, (*line).y, i, (*line).buffer[j]);
 			}
 		}
 	}
-	touchwin(form->window);
+	touchwin((*form).window);
 }
 
 void set_Ftextline_buffer(Ftextline *F, char *buffer){
 	int width;
 
-	strncpy(F->buffer, buffer, F->buffersize);
-	F->buffer[F->buffersize] = 0;
-	F->cursorpos = strlen(buffer);
+	strncpy((*F).buffer, buffer, (*F).buffersize);
+	(*F).buffer[(*F).buffersize] = 0;
+	(*F).cursorpos = strlen(buffer);
 
-	if (F->width < F->cursorpos) F->start = F->cursorpos - F->width; 
+	if ((*F).width < (*F).cursorpos) (*F).start = (*F).cursorpos - (*F).width; 
 	
 }
 
 void backspace_Ftextline_buffer(Ftextline *F){
-	if (F->cursorpos > 0){  
-		F->cursorpos--;
-                strcpy(&(F->buffer)[F->cursorpos], &(F->buffer)[F->cursorpos+1]);
+	if ((*F).cursorpos > 0){  
+		(*F).cursorpos--;
+                strcpy(&((*F).buffer)[(*F).cursorpos], &((*F).buffer)[(*F).cursorpos+1]);
         }
-	if (F->start > F->cursorpos) F->start--; 
+	if ((*F).start > (*F).cursorpos) (*F).start--; 
 }
 
 void delete_Ftextline_buffer(Ftextline *F){
-	if (strlen(&(F->buffer)[F->cursorpos]) > 0){
-		strcpy(&(F->buffer)[F->cursorpos], &(F->buffer)[F->cursorpos+1]);
+	if (strlen(&((*F).buffer)[(*F).cursorpos]) > 0){
+		strcpy(&((*F).buffer)[(*F).cursorpos], &((*F).buffer)[(*F).cursorpos+1]);
 	}
 }
 
 void add_Ftextline_buffer(Ftextline *F, int value){
 	char scratch[MAXDATASIZE];
 
-	if (strlen(F->buffer) < F->buffersize){
-		strcpy(scratch, &(F->buffer)[F->cursorpos]);
-	        (F->buffer)[F->cursorpos] = value;
-	        strcpy(&(F->buffer)[F->cursorpos+1], scratch);
-	        F->cursorpos++;
-		if (F->cursorpos >= F->start + F->width) F->start++; 
+	if (strlen((*F).buffer) < (*F).buffersize){
+		strcpy(scratch, &((*F).buffer)[(*F).cursorpos]);
+	        ((*F).buffer)[(*F).cursorpos] = value;
+	        strcpy(&((*F).buffer)[(*F).cursorpos+1], scratch);
+	        (*F).cursorpos++;
+		if ((*F).cursorpos >= (*F).start + (*F).width) (*F).start++; 
 	}
 }
 
 char *Ftextline_buffer_contents(Ftextline *F){
-	return(F->buffer);
+	return((*F).buffer);
 }
 	
 void move_Ftextline_cursor(Ftextline *F, int spaces){
-        F->cursorpos+=spaces;
-        if (F->cursorpos >= MAXDATASIZE) F->cursorpos = MAXDATASIZE-1;
-       	else if (F->cursorpos < 0) F->cursorpos = 0;
-        else if (F->cursorpos >= strlen(F->buffer)) F->cursorpos = strlen(F->buffer);
-	if (F->cursorpos >= F->start + F->width) F->start++; 
-	else if (F->start > F->cursorpos) F->start--; 
+        (*F).cursorpos+=spaces;
+        if ((*F).cursorpos >= MAXDATASIZE) (*F).cursorpos = MAXDATASIZE-1;
+       	else if ((*F).cursorpos < 0) (*F).cursorpos = 0;
+        else if ((*F).cursorpos >= strlen((*F).buffer)) (*F).cursorpos = strlen((*F).buffer);
+	if ((*F).cursorpos >= (*F).start + (*F).width) (*F).start++; 
+	else if ((*F).start > (*F).cursorpos) (*F).start--; 
 }
 
 int process_Ftextline_events(Ftextline *T, int event){
@@ -582,7 +582,7 @@ int process_Ftextline_events(Ftextline *T, int event){
 	else if (event == KEY_DOWN || event == 10 || event == KEY_ENTER) return(E_NEXT);
 	
 	/* scan to see if this is an allowed key */ 	
-	in = T->inputallow;
+	in = (*T).inputallow;
 	
 	if ((in & IN_ALPHA) && isalpha(event)) add_Ftextline_buffer(T, event);
 	else if ((in & IN_NUM) && isdigit(event)) add_Ftextline_buffer(T, event);
@@ -602,19 +602,19 @@ Flist *add_Flist(char *name, int tx, int ty, int x, int y, int width, int height
 		plog("Cannot allocate memory in add_Flist(:1)\n");   
 		exit(MEMALLOC_ERR);   
 	}
-	new->x = x;
-	new->y = y;
-	strcpy(new->name, name);
-	new->namex = tx;
-	new->namey = ty;
-	new->width = width;
-	new->height = height;
-	new->attrib = attr;
-	new->style = style;
-	new->top = NULL;
-	new->list = NULL;
-	new->last = NULL;
-	new->selected = NULL;
+	(*new).x = x;
+	(*new).y = y;
+	strcpy((*new).name, name);
+	(*new).namex = tx;
+	(*new).namey = ty;
+	(*new).width = width;
+	(*new).height = height;
+	(*new).attrib = attr;
+	(*new).style = style;
+	(*new).top = NULL;
+	(*new).list = NULL;
+	(*new).last = NULL;
+	(*new).selected = NULL;
 	return(new);	
 }
 
@@ -622,10 +622,10 @@ int remove_Flist(Flist *list){
 	Flistline *current, *next;
 	if (list == NULL) return(0);
 	
-	current = list->list;
+	current = (*list).list;
 	while(current != NULL){
-		next = current->next;
-		if (current->text != NULL) free(current->text);
+		next = (*current).next;
+		if ((*current).text != NULL) free((*current).text);
 		free(current);
 		current = next;
 	}
@@ -637,51 +637,51 @@ void print_Flist(form *form, Flist *list, int active){
 	int i, j, k, width, height;
 	Flistline *current;
 
-	width = list->width;
-	if (width > form->width - list->x) width = form->width - list->x - 1;
-	height = list->height;
-	if (height > form->height - list->y) height = form->height - list->y - 1;
+	width = (*list).width;
+	if (width > (*form).width - (*list).x) width = (*form).width - (*list).x - 1;
+	height = (*list).height;
+	if (height > (*form).height - (*list).y) height = (*form).height - (*list).y - 1;
 
-	wattrset(form->window, form->attrib | A_REVERSE);
+	wattrset((*form).window, (*form).attrib | A_REVERSE);
 	if (active){
-		wattron(form->window, A_BOLD);
-		mvwaddstr(form->window, list->namey, list->namex, list->name);
-		wattroff(form->window, A_BOLD);
+		wattron((*form).window, A_BOLD);
+		mvwaddstr((*form).window, (*list).namey, (*list).namex, (*list).name);
+		wattroff((*form).window, A_BOLD);
 	}
-	else mvwaddstr(form->window, list->namey, list->namex, list->name);
+	else mvwaddstr((*form).window, (*list).namey, (*list).namex, (*list).name);
 
-	wattrset(form->window, list->attrib);
+	wattrset((*form).window, (*list).attrib);
 	/* clear the list area */
-	for (j=list->y; (j < height + list->y); j++){
-		for (i=list->x, k=0; k < width; i++, k++){
-			mvwaddch(form->window, j, i, ' ');
+	for (j=(*list).y; (j < height + (*list).y); j++){
+		for (i=(*list).x, k=0; k < width; i++, k++){
+			mvwaddch((*form).window, j, i, ' ');
 		}
 	}
 
 	/* print all the text lines */	
-	current=list->top;
-	for (j=list->y; (j < height + list->y) && current != NULL; j++){
-		if (current == list->selected){
-			if ((list->style & STYLE_NO_HIGHLIGHT) == 0) wattron(form->window, A_REVERSE);
-			for (i=list->x, k=0; k < width; i++, k++){
-				if (k < strlen(current->text)){
-					mvwaddch(form->window, j, i, (current->text)[k]);
+	current=(*list).top;
+	for (j=(*list).y; (j < height + (*list).y) && current != NULL; j++){
+		if (current == (*list).selected){
+			if (((*list).style & STYLE_NO_HIGHLIGHT) == 0) wattron((*form).window, A_REVERSE);
+			for (i=(*list).x, k=0; k < width; i++, k++){
+				if (k < strlen((*current).text)){
+					mvwaddch((*form).window, j, i, ((*current).text)[k]);
 				}
-				else mvwaddch(form->window, j, i, ' ');
+				else mvwaddch((*form).window, j, i, ' ');
 			}
-			wattrset(form->window, list->attrib);
+			wattrset((*form).window, (*list).attrib);
 		}
 
 		else{
-			for (i=list->x, k=0; k < width; i++, k++){
-				if (k < strlen(current->text)){ 
-					mvwaddch(form->window, j, i, (current->text)[k]);
+			for (i=(*list).x, k=0; k < width; i++, k++){
+				if (k < strlen((*current).text)){ 
+					mvwaddch((*form).window, j, i, ((*current).text)[k]);
 				}
-				else mvwaddch(form->window, j, i, ' ');
+				else mvwaddch((*form).window, j, i, ' ');
 			}
 		}
 
-		current=current->next;
+		current=(*current).next;
 	}
 	
 }
@@ -703,30 +703,30 @@ Flistline *add_Flistline(Flist *list, int id, char *string, void *ptrid, int typ
 	}
 
 	strcpy(newtext, string);
-	new->text = newtext;
-	new->id = id;
-	new->ptrid = ptrid;
+	(*new).text = newtext;
+	(*new).id = id;
+	(*new).ptrid = ptrid;
 
 	if (type == FORMLIST_FIRST){
-		new->next = list->list;
-		new->prev = NULL;
-		if (list->list != NULL) list->list->prev = new;
-		list->list = new;
-		if (list->last == NULL) list->last = new;
-		list->top = new;
-		list->selected = new;
+		(*new).next = (*list).list;
+		(*new).prev = NULL;
+		if (list->list != NULL) list->list->prev = new; /* FIX */
+		(*list).list = new;
+		if ((*list).last == NULL) (*list).last = new;
+		(*list).top = new;
+		(*list).selected = new;
 	}
 	else if (type == FORMLIST_LAST){
-		new->prev = list->last;
-		new->next = NULL;
+		(*new).prev = (*list).last;
+		(*new).next = NULL;
 		if (list->last != NULL) list->last->next = new;
-		list->last = new;
-		if (list->list == NULL) list->list = new;
-		list->top = list->list;
-		list->selected = list->list;
+		(*list).last = new;
+		if ((*list).list == NULL) (*list).list = new;
+		(*list).top = (*list).list;
+		(*list).selected = (*list).list;
 	}
-	// if (list->top == NULL) list->top = list->list;
-	// if (list->selected == NULL) list->selected = new;
+	// if ((*list).top == NULL) (*list).top = (*list).list;
+	// if ((*list).selected == NULL) (*list).selected = new;
 
 	return(new);	
 }
@@ -738,108 +738,108 @@ int process_Flist_events(Flist *F, int event){
 
 	if (event == KEY_ENTER || event == 10) return(event);
 
-	else if (event == KEY_UP && F->selected != NULL){
+	else if (event == KEY_UP && (*F).selected != NULL){
 	
 		if (F->top == F->selected) F->top = F->top->prev;
 		F->selected = F->selected->prev;
 
-		if (F->selected == NULL) F->selected = F->list;
-		if (F->top == NULL) F->top = F->list;
+		if ((*F).selected == NULL) (*F).selected = (*F).list;
+		if ((*F).top == NULL) (*F).top = (*F).list;
 
 		return(E_NONE);
 	}
 
-	else if (event == KEY_DOWN && F->selected != NULL){
+	else if (event == KEY_DOWN && (*F).selected != NULL){
 
 		F->selected = F->selected->next;
-		if (F->selected == NULL) F->selected = F->last;
+		if ((*F).selected == NULL) (*F).selected = (*F).last;
 
 		/* count number of lines from top of list to currently selected line */
-		current = F->top;
+		current = (*F).top;
 		offset = 0;
 		while(current != NULL){
-			if (current == F->selected) break;
-			current = current->next;
+			if (current == (*F).selected) break;
+			current = (*current).next;
 			offset++;		
 		}
 
 		if (offset >= F->height) F->top = F->top->next;
 
 		/* top is height lines away from last line */
-		if (F->top == NULL){
-			current = F->last;
+		if ((*F).top == NULL){
+			current = (*F).last;
 			i = 0;
 			while(current != NULL){
-				if (i == F->height) break;
-				current = current->prev;
+				if (i == (*F).height) break;
+				current = (*current).prev;
 				i++;		
 			}
-			if (current == NULL) F->top = F->list;
-			else F->top = current;
+			if (current == NULL) (*F).top = (*F).list;
+			else (*F).top = current;
 		}
 
-		current = F->list;
+		current = (*F).list;
 		while(current != NULL){
-			if (current == F->top) break;
-			else if (current == F->selected){
+			if (current == (*F).top) break;
+			else if (current == (*F).selected){
 				// selected is below the last visible line, scroll down
 				F->top = F->top->next;
 				break;
 			}
-			current = current->next;
+			current = (*current).next;
 		}
 
 		return(E_NONE);
 	}
 
 	/* if a key is pressed other than up or down, jump to next entry starting with key */
-	else if (isprint(event) && F->selected != NULL){
+	else if (isprint(event) && (*F).selected != NULL){
 		topnum = -1;
 		i = 0;
 
 		/* select the next channel name that starts with key */
 		if (F->selected->next != NULL) current = F->selected->next;
-		else current = F->list;
+		else current = (*F).list;
         
 		found = 0;
 		while (current != NULL){        
-			if (event == current->text[0]){
+			if (event == (*current).text[0]){
 				found = 1;
-				F->selected = current;
+				(*F).selected = current;
 				break;
 			}
-			current = current->next;
+			current = (*current).next;
 		}
                  
         	/* if the key is not found in the first scan, scan once more from top */
         	if (!found){    
-			current = F->list;
+			current = (*F).list;
 			while (current != NULL){
-				if (event == current->text[0]){
+				if (event == (*current).text[0]){
 					found = 1;
-					F->selected = current;
+					(*F).selected = current;
 					break;
 				}
-				current = current->next;
+				current = (*current).next;
 			}
 		}
 
 		/* make sure that the window dimensions still display the selected entry */
-		current = F->list;
-		topentry = F->top;
-        	if (topentry == NULL) topentry = F->list;
+		current = (*F).list;
+		topentry = (*F).top;
+        	if (topentry == NULL) topentry = (*F).list;
 
 		while(current != NULL){
-			if (current == F->top) topnum = i;
-			if (topnum != -1 && i >= topnum + F->height){
+			if (current == (*F).top) topnum = i;
+			if (topnum != -1 && i >= topnum + (*F).height){
 				if (F->top->next != NULL) F->top = F->top->next;
 				topnum++;
 			}
-	                if (current == F->selected){
-	                        if (topnum == -1) F->top = F->selected;
+	                if (current == (*F).selected){
+	                        if (topnum == -1) (*F).top = (*F).selected;
 	                        break;
 			}
-	                current = current->next;
+	                current = (*current).next;
         	        i++;
 		}
 		return(E_NONE);
@@ -849,8 +849,8 @@ int process_Flist_events(Flist *F, int event){
 
 int active_list_line_id(Flist *F){
 	if (F != NULL){
-		if (F->selected != NULL){
-			return(F->selected->id);
+		if ((*F).selected != NULL){
+			return (*((*F).selected)).id;
 		}
 	}
 	return(-1);
@@ -862,15 +862,15 @@ int set_active_list_line_by_id(Flist *F, int id){
         int topnum, found;
 
 	if (F != NULL){
-		current = F->list;
+		current = (*F).list;
 		offset = 0;
 		while(current != NULL){
-			if (current->id == id){
-				F->top = current;
-				F->selected = current;
+			if ((*current).id == id){
+				(*F).top = current;
+				(*F).selected = current;
 				return(offset);
 			}
-			current = current->next;
+			current = (*current).next;
 			offset++;		
 		}
 	}
@@ -883,15 +883,15 @@ int set_active_list_line_by_ptrid(Flist *F, void *ptrid){
         int topnum, found;
 
 	if (F != NULL){
-		current = F->list;
+		current = (*F).list;
 		offset = 0;
 		while(current != NULL){
-			if (current->ptrid == ptrid){
-				F->top = current;
-				F->selected = current;
+			if ((*current).ptrid == ptrid){
+				(*F).top = current;
+				(*F).selected = current;
 				return(offset);
 			}
-			current = current->next;
+			current = (*current).next;
 			offset++;		
 		}
 	}
@@ -900,22 +900,22 @@ int set_active_list_line_by_ptrid(Flist *F, void *ptrid){
 
 void *active_list_line_ptrid(Flist *F){
 	if (F != NULL){
-		if (F->selected != NULL){
-			return(F->selected->ptrid);
+		if ((*F).selected != NULL){
+			return (*((*F).selected)).ptrid;
 		}
 	}
 	return(NULL);
 }
 
 Flistline *active_list_line(Flist *F){
-	if (F != NULL) return(F->selected);
+	if (F != NULL) return((*F).selected);
 	return(NULL);
 }
 
 char *active_list_line_text(Flist *F){
 	if (F != NULL){
-		if (F->selected != NULL){
-			return(F->selected->text);
+		if ((*F).selected != NULL){
+			return (*((*F).selected)).text;
 		}
 	}
 	return(NULL);
@@ -926,27 +926,27 @@ char *active_list_line_text(Flist *F){
 void print_Fbutton(form *form, Fbutton *button, int active){
 	int i, j, width;
 
-	width = button->width;
-	if (width > form->width - button->x) width = form->width - button->x - 1;
+	width = (*button).width;
+	if (width > (*form).width - (*button).x) width = (*form).width - (*button).x - 1;
 
-	wattrset(form->window, button->attrib);
-	if (active) wattron(form->window, A_REVERSE | A_BOLD);
+	wattrset((*form).window, (*button).attrib);
+	if (active) wattron((*form).window, A_REVERSE | A_BOLD);
 
 	// clear the button area and print the text
 
-	for (i = button->x, j = 0; j < width; i++, j++){
-		mvwaddch(form->window, button->y, i, ' ');
+	for (i = (*button).x, j = 0; j < width; i++, j++){
+		mvwaddch((*form).window, (*button).y, i, ' ');
 	}
-	if ((button->style)&(STYLE_LEFT_JUSTIFY)){
-		mvwaddstr(form->window, button->y, button->x, button->text); 
+	if (((*button).style)&(STYLE_LEFT_JUSTIFY)){
+		mvwaddstr((*form).window, (*button).y, (*button).x, (*button).text); 
 	}
-	else if ((button->style)&(STYLE_RIGHT_JUSTIFY)){
-		mvwaddstr(form->window, button->y, 
-		button->x + button->width - strlen(button->text), button->text); 
+	else if (((*button).style)&(STYLE_RIGHT_JUSTIFY)){
+		mvwaddstr((*form).window, (*button).y, 
+		(*button).x + (*button).width - strlen((*button).text), (*button).text); 
 	}
 	else {
-		mvwaddstr(form->window, button->y, 
-		button->x + (button->width)/2 - strlen(button->text)/2, button->text); 
+		mvwaddstr((*form).window, (*button).y, 
+		(*button).x + ((*button).width)/2 - strlen((*button).text)/2, (*button).text); 
 	}
 }
 
@@ -958,26 +958,26 @@ Fbutton *add_Fbutton(char *name, int x, int y, int width, int attr, int id, int 
 		plog("Cannot allocate memory in add_Fbutton(:1)\n");   
 		exit(MEMALLOC_ERR);   
 	}
-	new->x = x;
-	new->y = y;
-	new->width = width;
-	new->attrib = attr;
-	new->style = style;
-	new->eventid = id;
+	(*new).x = x;
+	(*new).y = y;
+	(*new).width = width;
+	(*new).attrib = attr;
+	(*new).style = style;
+	(*new).eventid = id;
 
-	new->text = malloc(strlen(name)+1);	
-        if (new->text == NULL){
+	(*new).text = malloc(strlen(name)+1);	
+        if ((*new).text == NULL){
 		plog("Cannot allocate memory in add_Fbutton(:2)\n");   
 		exit(MEMALLOC_ERR);   
 	}
-	strcpy(new->text, name);
+	strcpy((*new).text, name);
 	return(new);	
 }
 
 int remove_Fbutton(Fbutton *button){
 	if (button == NULL) return(0);
 	
-	if (button->text != NULL) free(button->text);
+	if ((*button).text != NULL) free((*button).text);
 	free(button);
 	return(1);
 }
@@ -987,7 +987,7 @@ int process_Fbutton_events(Fbutton *F, int event){
 	else if (event == KEY_DOWN) return(E_NEXT);
 	else if (event == KEY_LEFT) return(E_PREV);
 	else if (event == KEY_RIGHT) return(E_NEXT);
-	else if (event == KEY_ENTER || event == 10) return (F->eventid);
+	else if (event == KEY_ENTER || event == 10) return ((*F).eventid);
 	return(event);
 }
 
@@ -999,15 +999,15 @@ void print_Fcheckbox(form *form, Fcheckbox *checkbox, int active){
 
 	// print the text title
 
-	wattrset(form->window, form->attrib | A_REVERSE);
-	if (active) wattron(form->window, A_BOLD);
-	mvwaddstr(form->window, checkbox->texty, checkbox->textx, checkbox->text); 
+	wattrset((*form).window, (*form).attrib | A_REVERSE);
+	if (active) wattron((*form).window, A_BOLD);
+	mvwaddstr((*form).window, (*checkbox).texty, (*checkbox).textx, (*checkbox).text); 
 
-	if ((checkbox->style)&(STYLE_CHECKBOX_ROUND)){
+	if (((*checkbox).style)&(STYLE_CHECKBOX_ROUND)){
 		lc = '(';
 		rc = ')';
 	}		
-	else if ((checkbox->style)&(STYLE_CHECKBOX_TRIANGLE)){
+	else if (((*checkbox).style)&(STYLE_CHECKBOX_TRIANGLE)){
 		lc = '<';
 		rc = '>';
 	}
@@ -1016,8 +1016,8 @@ void print_Fcheckbox(form *form, Fcheckbox *checkbox, int active){
 		rc = ']';
 	}
 	
-	if (checkbox->selected){	
-		if ((checkbox->style)&(STYLE_CHECKBOX_STAR)){
+	if ((*checkbox).selected){	
+		if (((*checkbox).style)&(STYLE_CHECKBOX_STAR)){
 			mc = '*';
 		}		
 		else{
@@ -1026,12 +1026,12 @@ void print_Fcheckbox(form *form, Fcheckbox *checkbox, int active){
 	}
 	else mc = ' ';
 	
-	wattrset(form->window, checkbox->attrib);
-	if (active) wattron(form->window, A_BOLD);
-	mvwaddch(form->window, checkbox->y, checkbox->x-1, lc); 
-	mvwaddch(form->window, checkbox->y, checkbox->x, mc); 
-	mvwaddch(form->window, checkbox->y, checkbox->x+1, rc); 
-	wattroff(form->window, A_BOLD);
+	wattrset((*form).window, (*checkbox).attrib);
+	if (active) wattron((*form).window, A_BOLD);
+	mvwaddch((*form).window, (*checkbox).y, (*checkbox).x-1, lc); 
+	mvwaddch((*form).window, (*checkbox).y, (*checkbox).x, mc); 
+	mvwaddch((*form).window, (*checkbox).y, (*checkbox).x+1, rc); 
+	wattroff((*form).window, A_BOLD);
 
 }
 
@@ -1044,27 +1044,27 @@ Fcheckbox *add_Fcheckbox(char *name, int x, int y, int textx, int texty, int att
 		plog("Cannot allocate memory in add_Fcheckbox(:1)\n");   
 		exit(MEMALLOC_ERR);   
 	}
-	new->x = x;
-	new->y = y;
-	new->textx = textx;
-	new->texty = texty;
-	new->attrib = attrib;
-	new->style = style;
-	new->selected = 0;
+	(*new).x = x;
+	(*new).y = y;
+	(*new).textx = textx;
+	(*new).texty = texty;
+	(*new).attrib = attrib;
+	(*new).style = style;
+	(*new).selected = 0;
 
-	new->text = malloc(strlen(name)+1);	
-        if (new->text == NULL){
+	(*new).text = malloc(strlen(name)+1);	
+        if ((*new).text == NULL){
 		plog("Cannot allocate memory in add_Fcheckbox(:2)\n");   
 		exit(MEMALLOC_ERR);   
 	}
-	strcpy(new->text, name);
+	strcpy((*new).text, name);
 	return(new);
 }
 
 int remove_Fcheckbox(Fcheckbox *checkbox){
 	if (checkbox == NULL) return(0);
 	
-	if (checkbox->text != NULL) free(checkbox->text);
+	if ((*checkbox).text != NULL) free((*checkbox).text);
 	free(checkbox);
 	return(1);
 }
@@ -1075,20 +1075,20 @@ int process_Fcheckbox_events(Fcheckbox *B, int event){
 	else if (event == KEY_LEFT) return(E_PREV);
 	else if (event == KEY_RIGHT) return(E_NEXT);
 	else if (event == KEY_ENTER || event == 10 || event == ' '){
-		B->selected = B->selected ^ 1;
+		(*B).selected = (*B).selected ^ 1;
 		return (E_NONE);
 	}
 	return(event);
 }
 
 int Fcheckbox_value(Fcheckbox *B){
-	if (B != NULL) return(B->selected);
+	if (B != NULL) return((*B).selected);
 	else return(0);
 }
 
 void set_Fcheckbox_value(Fcheckbox *B, int value){
 	if (B == NULL) return;
-	B->selected = value;
+	(*B).selected = value;
 }
 
 /**** radio buttons (checkbox array) ***************************************************/
@@ -1099,16 +1099,16 @@ void print_Fcheckbox_array(form *form, Fcheckbox_array *checkboxes, int active){
 
 	// print the text title
 
-	wattrset(form->window, form->attrib | A_REVERSE);
-	if (active) wattron(form->window, A_BOLD);
-	mvwaddstr(form->window, checkboxes->texty, checkboxes->textx, checkboxes->text); 
-	wattroff(form->window, A_BOLD);
+	wattrset((*form).window, (*form).attrib | A_REVERSE);
+	if (active) wattron((*form).window, A_BOLD);
+	mvwaddstr((*form).window, (*checkboxes).texty, (*checkboxes).textx, (*checkboxes).text); 
+	wattroff((*form).window, A_BOLD);
 
-	current = checkboxes->list;
+	current = (*checkboxes).list;
 	while (current != NULL){
 		// checkboxes in an array are either all or none active
-		print_Fcheckbox(form, current->checkbox, active);
-		current = current->next;
+		print_Fcheckbox(form, (*current).checkbox, active);
+		current = (*current).next;
 	}
 }
 
@@ -1120,20 +1120,20 @@ Fcheckbox_array *add_Fcheckbox_array(char *name, int textx, int texty, int attri
 		plog("Cannot allocate memory in add_Fcheckbox_array(:1)\n");   
 		exit(MEMALLOC_ERR);   
 	}
-	new->textx = textx;
-	new->texty = texty;
-	new->attrib = attrib;
-	new->style = style;
-	new->selected = NULL;
-	new->list = NULL;
-	new->last = NULL;
+	(*new).textx = textx;
+	(*new).texty = texty;
+	(*new).attrib = attrib;
+	(*new).style = style;
+	(*new).selected = NULL;
+	(*new).list = NULL;
+	(*new).last = NULL;
 
-	new->text = malloc(strlen(name)+1);	
-        if (new->text == NULL){
+	(*new).text = malloc(strlen(name)+1);	
+        if ((*new).text == NULL){
 		plog("Cannot allocate memory in add_Fcheckbox_array(:2)\n");   
 		exit(MEMALLOC_ERR);   
 	}
-	strcpy(new->text, name);
+	strcpy((*new).text, name);
 	return(new);
 }
 
@@ -1146,18 +1146,18 @@ Fcheckbox_array_box *add_Fcheckbox_to_array(Fcheckbox_array *array, int id, Fche
 		exit(MEMALLOC_ERR);   
 	}
 
-	new->id = id;
-	new->checkbox = box;
-	new->prev = array->last;
-	new->next = NULL;
+	(*new).id = id;
+	(*new).checkbox = box;
+	(*new).prev = (*array).last;
+	(*new).next = NULL;
 
-	if (array->last != NULL) (array->last)->next = new;
-	array->last = new;
-	if (array->list == NULL) array->list = new;
+	if ((*array).last != NULL) (*((*array).last)).next = new;
+	(*array).last = new;
+	if ((*array).list == NULL) (*array).list = new;
 	
-	if (array->selected == NULL){
-		array->selected = new;
-		set_Fcheckbox_value((array->selected)->checkbox, 1);
+	if ((*array).selected == NULL){
+		(*array).selected = new;
+		set_Fcheckbox_value((*((*array).selected)).checkbox, 1);
 	}
 
 	return(new);	
@@ -1167,10 +1167,10 @@ int remove_Fcheckbox_array(Fcheckbox_array *array){
 	Fcheckbox_array_box *current, *next;
 
 	if (array == NULL) return(0);
-	current = array->list;
+	current = (*array).list;
 	while (current != NULL){
-		next = current->next;
-		if (current->checkbox != NULL) remove_Fcheckbox(current->checkbox);
+		next = (*current).next;
+		if ((*current).checkbox != NULL) remove_Fcheckbox((*current).checkbox);
 		free(current);
 		current = next;
 	} 	
@@ -1181,19 +1181,19 @@ int remove_Fcheckbox_array(Fcheckbox_array *array){
 int process_Fcheckbox_array_events(Fcheckbox_array *B, int event){
 	Fcheckbox_array_box *current;
 	if (event == KEY_UP || event == KEY_LEFT) {
-		if (B->list != NULL){
+		if ((*B).list != NULL){
 			set_Fcheckbox_value(B->selected->checkbox, 0);
 			if (B->selected->prev != NULL) B->selected = (B->selected)->prev;
-			else B->selected = B->last;				
-			set_Fcheckbox_value((B->selected)->checkbox, 1);
+			else (*B).selected = (*B).last;				
+			set_Fcheckbox_value((*((*B).selected)).checkbox, 1);
 		}
 	}
 	else if (event == KEY_DOWN || event == KEY_RIGHT) {
-		if (B->list != NULL){
-			set_Fcheckbox_value((B->selected)->checkbox, 0);
+		if ((*B).list != NULL){
+			set_Fcheckbox_value((*((*B).selected)).checkbox, 0);
 			if (B->selected->next != NULL) B->selected = (B->selected)->next;
-			else B->selected = B->list;
-			set_Fcheckbox_value((B->selected)->checkbox, 1);
+			else (*B).selected = (*B).list;
+			set_Fcheckbox_value((*((*B).selected)).checkbox, 1);
 		} 
 	}
 	
@@ -1203,10 +1203,10 @@ int process_Fcheckbox_array_events(Fcheckbox_array *B, int event){
 int Fcheckbox_array_selected_id(Fcheckbox_array *B){
 	Fcheckbox_array_box *current;
 	
-	current = B->list;
+	current = (*B).list;
 	while (current != NULL){
-		if (current == B->selected) return(current->id);
-		current = current->next;
+		if (current == (*B).selected) return((*current).id);
+		current = (*current).next;
 	} 
 	return(-1);
 }
@@ -1214,14 +1214,14 @@ int Fcheckbox_array_selected_id(Fcheckbox_array *B){
 int Fcheckbox_array_select(Fcheckbox_array *B, Fcheckbox_array_box *selected){
 	Fcheckbox_array_box *current;
 	
-	current = B->list;
+	current = (*B).list;
 	while (current != NULL){
 		if (current == selected){
-			B->selected = selected;
-			set_Fcheckbox_value(current->checkbox, 1);
+			(*B).selected = selected;
+			set_Fcheckbox_value((*current).checkbox, 1);
 		}
-		else set_Fcheckbox_value(current->checkbox, 0);
-		current = current->next;
+		else set_Fcheckbox_value((*current).checkbox, 0);
+		current = (*current).next;
 
 	} 
 	return(-1);
@@ -1230,15 +1230,15 @@ int Fcheckbox_array_select(Fcheckbox_array *B, Fcheckbox_array_box *selected){
 int Fcheckbox_array_select_by_id(Fcheckbox_array *B, int id){
 	Fcheckbox_array_box *current;
 
-	current = B->list;
+	current = (*B).list;
 	while (current != NULL){
-		if (current->id == id){
-			B->selected = current;
-			set_Fcheckbox_value(current->checkbox, 1);
+		if ((*current).id == id){
+			(*B).selected = current;
+			set_Fcheckbox_value((*current).checkbox, 1);
 		}
-		else set_Fcheckbox_value(current->checkbox, 0);
+		else set_Fcheckbox_value((*current).checkbox, 0);
 
-		current = current->next;
+		current = (*current).next;
 	} 
 	return(-1);
 }
