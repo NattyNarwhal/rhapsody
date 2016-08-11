@@ -832,7 +832,7 @@ dcc_file *add_outgoing_dcc_file(transfer *transfer, server *server, char *nick, 
 	err = fstat(fd, &buf);
 	new->size = buf.st_size;
 	
-	if (err == -1 && errno != EOVERFLOW){ 
+	if (err == -1 && errno != E2BIG){ 
 		vprint_all_attrib(ERROR_COLOR, "Error (%d %s) getting file size for filename %s.\n", 
 			errno, strerror(errno), filename);
 	}

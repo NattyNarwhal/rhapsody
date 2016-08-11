@@ -2709,7 +2709,7 @@ form *create_directory_listing_form(char *path){
 			sprintf(pathbuffer, "%s/%s", path, direntp->d_name);
 			if (stat(pathbuffer, &filestat) == -1){
 				/* large file support still complains about filesize */
-				if (errno != EOVERFLOW){
+				if (errno != E2BIG){
 					vprint_all("Error %d, %s getting stats on file %s\n",
 						errno, strerror(errno), direntp->d_name);
 					continue;
