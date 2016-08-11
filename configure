@@ -212,6 +212,22 @@ elif [ "$OSNAME" = "Cygwin" ] ; then
 	PROGRAMNAME="rhapsody.exe"
 	STDDOCSPATH="/usr/share/doc/rhapsody"
 
+elif [ "$OSNAME" = "NEXTSTEP" ] ; then
+	CCPATH="/bin /usr/bin /usr/local/bin"
+	CURSESPATH="/usr/include /usr/local/include /usr/include/ncurses /usr/local/include/ncurses"
+
+	GCCBASELIBS="-lncurses" 
+	GCCBASELIBPATHS="-L/usr/lib -L/lib -L/usr/local/lib"
+	GCCBASEINCPATHS="-I/usr/include -I/usr/local/include"
+	GCCBASEFLAGS="-g -Wall -Wno-unused -posix"
+
+	CCBASELIBS="-lncurses" 
+	CCBASELIBPATHS="-L/usr/lib -L/lib -L/usr/local/lib"
+	CCBASEINCPATHS="-I/usr/include -I/usr/local/include"
+	CCBASEFLAGS="-g -posix"
+
+	STDDOCSPATH="/usr/local/doc/rhapsody"
+
 else	
 	echo "This OS is not currently supported, but I will try to make it work."
 	CCPATH="/bin /sbin /usr/bin /usr/sbin/ /usr/local/bin/ /usr/local/sbin" 
