@@ -1,3 +1,10 @@
+# information set by configure
+src/autodefs.h
+src/Makefile.inc
+# object files
 src/*.o
+# debug info
 plog.log
+# the executable
 src/rhapsody
+rhapsody
