@@ -38,7 +38,6 @@
 #include <signal.h>
 #include <ctype.h>
 #include <pwd.h>
-#include <sys/utsname.h>
 
 #include "autodefs.h"
 #include "defines.h"
@@ -111,7 +110,6 @@ int sigkey;
 
 int main(int argc, char *argv[]){
 	struct passwd *pwd;
-	struct utsname host;
 	char buffer[MAXDATASIZE];
 	char inputbuffer[MAXDATASIZE];
 	char *scratchptr;
@@ -154,13 +152,8 @@ int main(int argc, char *argv[]){
 	strcpy(homepath, pwd->pw_dir);
 
 	/* get the hostname and domain for defaults */
-	uname(&host);
-	strcpy(hostname, host.nodename);
-	#ifdef _GNU_SOURCE
-	strcpy(domain, host.domainname);
-	#else
+	gethostname(hostname, MAXHOSTLEN);
 	strcpy(domain, "");
-	#endif
 
 	sprintf(configfile, "%s/%s", homepath, DEFAULT_CONFIG_FILE);
 	//printf("%s:%s:%s", loginuser, homepath, configfile);
