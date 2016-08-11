@@ -134,7 +134,7 @@ form *create_new_server_connect_form(char *server, int port, char *password){
 	comp = (void *) add_Fbutton("Cancel", 28, 8, 8, FORM_COLOR_BUTTON, E_COMPONENT_ID, STYLE_CENTER_JUSTIFY);
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
          
-	return(form);
+	return form;
 }
 
 
@@ -209,7 +209,7 @@ form *create_favorite_server_connect_form(){
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
          
 	print_form(form);
-	return(form);
+	return form;
 }
 
 
@@ -397,7 +397,7 @@ form *create_edit_favorite_server_form(){
 	comp = (void *) add_Fbutton("Done", 32, 18, 6, FORM_COLOR_BUTTON, E_COMPONENT_ID, STYLE_CENTER_JUSTIFY);
 	add_form_component(form, comp, FORM_ID_OK, F_BUTTON);
 
-	return(form);
+	return form;
 }
 
 form *create_new_favorite_server_form(){
@@ -422,7 +422,7 @@ form *create_new_favorite_server_form(){
 	comp = (void *) add_Fbutton("Cancel", 28, 8, 8, FORM_COLOR_BUTTON, E_COMPONENT_ID, STYLE_CENTER_JUSTIFY);
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
          
-	return(form);
+	return form;
 }
 
 form *create_change_favorite_server_form(char *server, int port, char *password){
@@ -451,7 +451,7 @@ form *create_change_favorite_server_form(char *server, int port, char *password)
 	comp = (void *) add_Fbutton("Cancel", 28, 8, 8, FORM_COLOR_BUTTON, E_COMPONENT_ID, STYLE_CENTER_JUSTIFY);
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
          
-	return(form);
+	return form;
 }
 
 /** new channel join *********************************************************************/
@@ -496,7 +496,7 @@ form *create_new_channel_join_form(){
 	comp = (void *) add_Fbutton("Cancel", 28, 6, 8, FORM_COLOR_BUTTON, E_COMPONENT_ID, STYLE_CENTER_JUSTIFY);
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
          
-	return(form);
+	return form;
 }
 
 
@@ -565,7 +565,7 @@ form *create_favorite_channel_join_form(){
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
          
 	print_form(form);
-	return(form);
+	return form;
 }
 
 /** favorite channel edit ***********************************************************************/
@@ -717,7 +717,7 @@ form *create_edit_favorite_channel_form(){
 	comp = (void *) add_Fbutton("Done", 32, 18, 6, FORM_COLOR_BUTTON, E_COMPONENT_ID, STYLE_CENTER_JUSTIFY);
 	add_form_component(form, comp, FORM_ID_OK, F_BUTTON);
 
-	return(form);
+	return form;
 }
 
 form *create_new_favorite_channel_form(){
@@ -735,7 +735,7 @@ form *create_new_favorite_channel_form(){
 	comp = (void *) add_Fbutton("Cancel", 28, 6, 8, FORM_COLOR_BUTTON, E_COMPONENT_ID, STYLE_CENTER_JUSTIFY);
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
          
-	return(form);
+	return form;
 }
 
 form *create_change_favorite_channel_form(char *channel){
@@ -754,7 +754,7 @@ form *create_change_favorite_channel_form(char *channel){
 	comp = (void *) add_Fbutton("Cancel", 28, 6, 8, FORM_COLOR_BUTTON, E_COMPONENT_ID, STYLE_CENTER_JUSTIFY);
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
          
-	return(form);
+	return form;
 }
 
 
@@ -799,7 +799,7 @@ form *create_new_chat_form(){
 	comp = (void *) add_Fbutton("Cancel", 28, 6, 8, FORM_COLOR_BUTTON, E_COMPONENT_ID, STYLE_CENTER_JUSTIFY);
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
          
-	return(form);
+	return form;
 }
 
 
@@ -868,7 +868,7 @@ form *create_favorite_chat_form(){
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
 
 	print_form(form);
-	return(form);
+	return form;
 }
 
 /** new dcc chat *********************************************************************/
@@ -912,7 +912,7 @@ form *create_new_dccchat_form(){
 	comp = (void *) add_Fbutton("Cancel", 28, 6, 8, FORM_COLOR_BUTTON, E_COMPONENT_ID, STYLE_CENTER_JUSTIFY);
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
          
-	return(form);
+	return form;
 }
 
 /** favorite user dcc_chat  ****************************************************************/
@@ -979,7 +979,7 @@ form *create_favorite_dccchat_form(){
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
 
 	print_form(form);
-	return(form);
+	return form;
 }
 
 /** new dcc send *********************************************************************/
@@ -1022,7 +1022,7 @@ form *create_new_dccsend_form(){
 	comp = (void *) add_Fbutton("Cancel", 28, 6, 8, FORM_COLOR_BUTTON, E_COMPONENT_ID, STYLE_CENTER_JUSTIFY);
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
          
-	return(form);
+	return form;
 }
 
 /** favorite user dcc send  ****************************************************************/
@@ -1094,7 +1094,7 @@ form *create_favorite_dccsend_form(){
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
 
 	print_form(form);
-	return(form);
+	return form;
 }
 
 /** edit favorite / banned users edit ***********************************************************************/
@@ -1258,7 +1258,7 @@ form *create_edit_user_form(char *title, config_user *userlist){
 	comp = (void *) add_Fbutton("Done", 32, 18, 6, FORM_COLOR_BUTTON, E_COMPONENT_ID, STYLE_CENTER_JUSTIFY);
 	add_form_component(form, comp, FORM_ID_OK, F_BUTTON);
 
-	return(form);
+	return form;
 }
 
 form *create_new_user_form(char *title){
@@ -1276,7 +1276,7 @@ form *create_new_user_form(char *title){
 	comp = (void *) add_Fbutton("Cancel", 28, 6, 8, FORM_COLOR_BUTTON, E_COMPONENT_ID, STYLE_CENTER_JUSTIFY);
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
          
-	return(form);
+	return form;
 }
 
 form *create_change_user_form(char *title, char *user){
@@ -1294,7 +1294,7 @@ form *create_change_user_form(char *title, char *user){
 	comp = (void *) add_Fbutton("Cancel", 28, 6, 8, FORM_COLOR_BUTTON, E_COMPONENT_ID, STYLE_CENTER_JUSTIFY);
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
          
-	return(form);
+	return form;
 }
 
 /**  list view options  ***************************************************************************/
@@ -1371,7 +1371,7 @@ form *create_list_view_form(){
 	comp = (void *) add_Fbutton("Cancel", 30, 10, 8, FORM_COLOR_BUTTON, E_COMPONENT_ID, STYLE_CENTER_JUSTIFY);
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
          
-	return(form);
+	return form;
 }
 
 
@@ -1419,7 +1419,7 @@ form *create_channel_select_form(){
 	comp = (void *) add_Fbutton("Cancel", 28, 4, 8, FORM_COLOR_BUTTON, E_COMPONENT_ID, STYLE_CENTER_JUSTIFY);
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
          
-	return(form);
+	return form;
 }
 
 
@@ -1840,7 +1840,7 @@ form *create_identity_form(char *nick, char *altnick, char *name, char *user, ch
 	comp = (void *) add_Fbutton("Cancel", 30, 15, 8, FORM_COLOR_BUTTON, E_COMPONENT_ID, STYLE_CENTER_JUSTIFY);
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
          
-	return(form);
+	return form;
 }
 
 /** network settings ***************************************************************************/
@@ -1944,7 +1944,7 @@ form *create_network_settings_form(int proxy, char *hostname, int port, char *us
 	comp = (void *) add_Fbutton("Cancel", 26, 18, 8, FORM_COLOR_BUTTON, E_COMPONENT_ID, STYLE_CENTER_JUSTIFY);
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
          
-	return(form);
+	return form;
 }
 
 /** ctcp options ***************************************************************************/
@@ -2026,7 +2026,7 @@ form *create_ctcp_form(int status, int throttle, char *finger, char *userinfo){
 	comp = (void *) add_Fbutton("Cancel", 30, 10, 8, FORM_COLOR_BUTTON, E_COMPONENT_ID, STYLE_CENTER_JUSTIFY);
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
          
-	return(form);
+	return form;
 }
 
 /** dcc options ***************************************************************************/
@@ -2092,7 +2092,7 @@ form *create_dcc_form(char *hostname, int startport, int endport){
 	comp = (void *) add_Fbutton("Cancel", 28, 8, 8, FORM_COLOR_BUTTON, E_COMPONENT_ID, STYLE_CENTER_JUSTIFY);
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
          
-	return(form);
+	return form;
 }
 
 /** dcc send options ***************************************************************/
@@ -2217,7 +2217,7 @@ form *create_dcc_send_form(char *dlpath, char *ulpath, int blocksize, int accept
 	comp = (void *) add_Fbutton("Cancel", 30, 19, 8, FORM_COLOR_BUTTON, E_COMPONENT_ID, STYLE_CENTER_JUSTIFY);
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
          
-	return(form);
+	return form;
 }
 
 /** client options ***************************************************************************/
@@ -2317,7 +2317,7 @@ form *create_client_options_form(){
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
 
          
-	return(form);
+	return form;
 }
 
 /** color options ***************************************************************************/
@@ -2537,7 +2537,7 @@ form *create_color_options_form(){
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
 
          
-	return(form);
+	return form;
 }
 
 void create_color_list(Flist *comp, int curcolor){
@@ -2736,6 +2736,6 @@ form *create_directory_listing_form(char *path){
 	comp = (void *) add_Fbutton("Cancel", 30, 18, 8, FORM_COLOR_BUTTON, E_COMPONENT_ID, STYLE_CENTER_JUSTIFY);
 	add_form_component(form, comp, FORM_ID_CANCEL, F_BUTTON);
 
-	return(form);
+	return form;
 }
 
