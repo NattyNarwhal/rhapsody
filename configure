@@ -212,7 +212,7 @@ elif [ "$OSNAME" = "Cygwin" ] ; then
 	PROGRAMNAME="rhapsody.exe"
 	STDDOCSPATH="/usr/share/doc/rhapsody"
 
-elif [ "$OSNAME" = "NEXTSTEP" ] ; then
+elif [ "$OS" = "NEXTSTEP" ] ; then
 	CCPATH="/bin /usr/bin /usr/local/bin"
 	CURSESPATH="/usr/include /usr/local/include /usr/include/ncurses /usr/local/include/ncurses"
 
