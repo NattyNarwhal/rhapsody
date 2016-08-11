@@ -354,14 +354,14 @@ void vprint_all(char *template, ...){
 }
 
 void scroll_message_screen(screen *screen, int lines){
-	screen->scrollpos = (screen->scrollpos) + lines;
-	screen->scrolling = 1;
+	(*screen).scrollpos = ((*screen).scrollpos) + lines;
+	(*screen).scrolling = 1;
 	if (screen->scrollpos > BUFFERLINES) screen->scrollpos = BUFFERLINES;
 	else if (screen->scrollpos < 0) screen->scrollpos=0;
 }
 
 void set_message_scrolling(screen *screen, int scroll){	
-	screen->scrolling=scroll;
+	(*screen).scrolling=scroll;
 }
 
 void redraw_screen(screen *current){
@@ -457,7 +457,7 @@ screen *select_screen(screen *screen){
         set_menuline_update_status(menuline, U_ALL_REFRESH);
         set_statusline_update_status(statusline, U_ALL_REFRESH);
 	
-	return(screen);
+	return screen;
 }
 
 int process_screen_events(screen *screen, int key){
